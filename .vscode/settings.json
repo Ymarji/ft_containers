@@ -64,6 +64,7 @@
         "cwchar": "cpp",
         "cwctype": "cpp",
         "iostream": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "list": "cpp"
     }
 }
