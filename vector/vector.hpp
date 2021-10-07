@@ -6,13 +6,15 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/06 10:10:56 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/07 10:10:30 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 #include <iostream>
+#include <stdexcept>      // std::length_error
+
 // #include <stack>
 #include <iterator>
 // #include <vector>
@@ -21,7 +23,6 @@
 #define put(x) std::cout << x << std::endl
 namespace ft
 {
-
 	template<class Iterator>
 	struct iterator_traits
 	{
@@ -29,7 +30,7 @@ namespace ft
 		typedef typename Iterator::value_type value_type;
 		typedef typename Iterator::pointer pointer;
 		typedef typename Iterator::reference reference;
-		typedef typename  std::random_access_iterator_tag iterator_category;
+		typedef typename std::random_access_iterator_tag iterator_category;
 	};
 
 	template<class T>
@@ -49,14 +50,14 @@ namespace ft
 			  class Pointer = T *,		  // iterator::pointer
 			  class Reference = T &		  // iterator::reference
 			>
-	class iterator
+	struct iterator
 	{
-	public:
-		typedef Category iterator_category;
-		typedef T value_type;
-		typedef Distance difference_type;
-		typedef Pointer pointer;
-		typedef Reference reference;
+		public:
+			typedef Category iterator_category;
+			typedef T value_type;
+			typedef Distance difference_type;
+			typedef Pointer pointer;
+			typedef Reference reference;
 	};
 
 	template <typename T>
@@ -162,11 +163,12 @@ namespace ft
 			typedef 			vectorIterator<pointer>						iterator;
 			typedef 			vectorIterator<const_pointer>				const_iterator;
 			typedef typename 	allocator_type::size_type					size_type;
-		public:
+		public: /* class Constructor and destructor */
 			vector<T, Alloc>():
 			_size(0),
 			_cap(0){
 				_ptr = _allocator.allocate(0);
+				_ptr = nullptr;
 			};
 			
 			vector<T, Alloc>(size_type n, const value_type &val = value_type(), const allocator_type &alloc = allocator_type()):
@@ -198,23 +200,76 @@ namespace ft
 			~vector(){
 				_allocator.deallocate(_ptr, _cap);
 			};
-		public:
+		private: /* utile funstion */
+			void	Mreallocat(size_type n)//, value_type val = value_type())
+			{
+				size_type _cs = size();
+				allocator_type _all;
+				pointer _tmp;
+				_tmp = _ptr;
+				if (n > _cap){
+					_cap = 2 * n;
+					for (size_type i = 0; i < _cap; i++)
+						_allocator.destroy(_ptr + i);
+					_allocator.deallocate(_ptr, _cap);
+					_ptr = _allocator.allocate(_cap);
+				for(size_type i = 0; i < _cs; i++)
+					_ptr[i] = _tmp[i];
+				}
+			}
+		public: /* iterator Function */
 			iterator begin(){
 				return iterator(_ptr);
 			};
-
 			const_iterator begin() const{
 				return const_iterator(_ptr);
 			};
-
 			iterator end(){
 				return iterator(_ptr + _size);
 			};
-
 			const_iterator end() const{
 				return const_iterator(_ptr + _size);
 			};
-
+		public: /* Capacity Function */
+			size_type size() const{
+				return _size;
+			};
+			size_type max_size() const{
+				return _allocator.max_size();
+			}
+			size_type capacity() const{
+				return _cap;
+			};
+			bool empty() const{
+				return ((_size != 0)? false : true);
+			};
+			void resize (size_type n, value_type val = value_type()){
+				if (n < _size){
+					for (size_type i = n; i < _size; i++)
+						_allocator.destroy(_ptr + i);
+					_size = n;
+					}
+				else if(n > _size)
+				{
+					Mreallocat(n);//, val);
+					size_type _cs = size();
+					if (n > _cs)
+						for (size_type i = _cs; i < n; i++)
+						{
+							_ptr[i] = val;
+						}
+					_size = n;
+				}
+			};
+			void reserve (size_type n){
+				size_type _cs = size();
+				size_type _ccap = capacity();
+				if (n > max_size())
+					throw std::length_error("Size beyond Max_size");
+				else if(n > _ccap)
+					Mreallocat(n);
+			};
+		public: /* Vector Operators */
 			vector& operator= (const vector& rhs){
 				this->_allocator = rhs._allocator;
 				this->_cap = rhs._cap;
@@ -227,11 +282,28 @@ namespace ft
 			reference operator[] (size_type n){
 				return _ptr[n];
 			};
-			
 			const_reference operator[] (size_type n) const{
 				return _ptr[n];
 			};
-		
+			reference at (size_type n){
+				return v[n];
+			};
+			const_reference at (size_type n) const{
+				return v[n];
+			};
+			reference front(){
+				return v[0];
+			};
+			const_reference front() const{
+				return v[0];
+			};
+			reference back(){
+				return v[_size - 1];
+			};
+			const_reference back() const{
+				return v[_size - 1];
+			};
+		public: /* Modifiers Functions */
 		private:
 			size_type		_size;
 			size_type		_cap;

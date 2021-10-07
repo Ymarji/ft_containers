@@ -1,7 +1,6 @@
 #include <vector>
 #include "./vector.hpp"
 // #include <iostream>
-
 // #include <algorithm>
 // #include <memory>
 // // // template <class MyIterator>
@@ -12,18 +11,22 @@
 // // // }
 int main(){
 
-   	std::vector<int> v1;
-   	v1.push_back(24);
-   	v1.push_back(1337);
-   	v1.push_back(42);
-
+	std::vector<int> v1;
+	v1.push_back(24);
+	v1.push_back(1337);
+	v1.push_back(42);
 	int a[] = { 1 , 2 ,3};
 	ft::vector<int> v(v1.begin(), v1.end());
 	for (ft::vector<int>::iterator i = v.begin(); i != v.end(); i++)
 	{
 		std::cout  << *i << std::endl;
 	}
-	
+	put("------------------------------------");
+	v.resize(5, 0);
+	for (ft::vector<int>::iterator i = v.begin(); i != v.end(); i++)
+	{
+		std::cout  << *i << std::endl;
+	}
 	// std::cout << *(v.begin())  << std::endl;
 	// ft::vector<int>::iterator it = v.begin();
 	// it++;
