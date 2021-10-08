@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/08 12:11:26 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/08 12:30:00 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,10 +324,23 @@ namespace ft
 		void assign (size_type n, const value_type& val){
 			if (n > max_size())
 					throw std::length_error("Size beyond Max_size");
-			if (n < _cap){
+			if (n > _cap){
 				DestroyV();
-				_ptr = _allocator.allocate(n);
-				
+				_cap = n * 2;
+				_size = n;
+				_ptr = _allocator.allocate(_cap);
+				for (size_type i = 0; i < _size; i++)
+				{
+					_ptr[i] = val;
+				}
+			}
+			else
+			{
+				for (size_type i = n; i < _size; i++)
+					_allocator.destroy(_ptr + i);
+				_size = n;
+				for (size_type i = 0; i < _size; i++)
+					_ptr[i] = val;
 			}
 		};
 		private:

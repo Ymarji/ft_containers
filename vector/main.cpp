@@ -22,16 +22,24 @@ int main(){
 	v1.push_back(8);
 	v1.push_back(9);
 	v1.push_back(10);
-	int a[] = { 1 , 2 ,3};
+	// v1.assign(5, 200);
+	put("-------------------std::vector::print-----------------");
+	// int a[] = { 1 , 2 ,3};
+	for (std::vector<int>::iterator i = v1.begin(); i != v1.end(); i++)
+	{
+		std::cout  << *i << std::endl;
+	}
+	put("------------------- ft::vector::print-----------------");
 	ft::vector<int> v(v1.begin(), v1.end());
 	for (ft::vector<int>::iterator i = v.begin(); i != v.end(); i++)
 	{
 		std::cout  << *i << std::endl;
 	}
-	put("------------------------------------");
-	v.resize(5);
-	v.resize(8,100);
-	v.resize(10);
+	put("------------------- ft::vector::re::print-----------------");
+	// v.resize(5);
+	// v.resize(8,100);
+	// v.resize(10);
+	v.assign(5, 200);
 	
 	for (ft::vector<int>::iterator i = v.begin(); i != v.end(); i++)
 	{
