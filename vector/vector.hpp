@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/08 12:30:00 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/08 12:37:38 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -319,7 +319,6 @@ namespace ft
 		public: /* Modifiers Functions */
 		// template <class InputIterator>
 		// void assign (InputIterator first, InputIterator last){
-			
 		// };
 		void assign (size_type n, const value_type& val){
 			if (n > max_size())
