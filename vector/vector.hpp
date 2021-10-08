@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/07 10:10:30 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/08 12:11:26 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,18 @@
 
 // #include <stack>
 #include <iterator>
-// #include <vector>
+#include <vector>
 #include <algorithm>
 #include <memory>
 #define put(x) std::cout << x << std::endl
 namespace ft
 {
+	// template <bool Cond, class T = void>
+	// typename std::enable_if<std::is_integral<T>::value,bool>::type
+	// struct enable_if{
+		
+	// };
+	
 	template<class Iterator>
 	struct iterator_traits
 	{
@@ -217,6 +223,13 @@ namespace ft
 					_ptr[i] = _tmp[i];
 				}
 			}
+			void	DestroyV()
+			{
+				size_type _cc = capacity();
+				for (size_type i = 0; i < _CTYPE_C; i++)
+					_allocator.destroy(_ptr + i);
+				_allocator.deallocate(_ptr, _cc);
+			}
 		public: /* iterator Function */
 			iterator begin(){
 				return iterator(_ptr);
@@ -286,24 +299,37 @@ namespace ft
 				return _ptr[n];
 			};
 			reference at (size_type n){
-				return v[n];
+				return _ptr[n];
 			};
 			const_reference at (size_type n) const{
-				return v[n];
+				return _ptr[n];
 			};
 			reference front(){
-				return v[0];
+				return _ptr[0];
 			};
 			const_reference front() const{
-				return v[0];
+				return _ptr[0];
 			};
 			reference back(){
-				return v[_size - 1];
+				return _ptr[_size - 1];
 			};
 			const_reference back() const{
-				return v[_size - 1];
+				return _ptr[_size - 1];
 			};
 		public: /* Modifiers Functions */
+		// template <class InputIterator>
+		// void assign (InputIterator first, InputIterator last){
+			
+		// };
+		void assign (size_type n, const value_type& val){
+			if (n > max_size())
+					throw std::length_error("Size beyond Max_size");
+			if (n < _cap){
+				DestroyV();
+				_ptr = _allocator.allocate(n);
+				
+			}
+		};
 		private:
 			size_type		_size;
 			size_type		_cap;
