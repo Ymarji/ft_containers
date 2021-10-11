@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/08 13:03:00 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/09 14:52:51 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,6 +187,7 @@ namespace ft
 					_ptr[i] = val;
 			};
 			
+			// typename std::enable_if<std::__is_input_iterator<InputIterator>::value>::type
 			template <class	InputIterator>
 			vector<T, Alloc>(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type())
 			{

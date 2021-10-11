@@ -1,4 +1,5 @@
 #include <vector>
+#include <exception>
 #include "./vector.hpp"
 // #include <iostream>
 // #include <algorithm>
@@ -9,8 +10,10 @@
 // // //     value_type v = *start;
 // // //     std::cout << v;
 // // // }
+class test{
+	int a;
+};
 int main(){
-	
 	std::vector<int> v1;
 	v1.push_back(1);
 	v1.push_back(2);
@@ -31,6 +34,7 @@ int main(){
 	}
 	put("------------------- ft::vector::print-----------------");
 	ft::vector<int> v(v1.begin(), v1.end());
+	ft::vector<int> v3(5, 100);
 	for (ft::vector<int>::iterator i = v.begin(); i != v.end(); i++)
 	{
 		std::cout  << *i << std::endl;
