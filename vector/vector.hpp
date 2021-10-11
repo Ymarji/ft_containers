@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/09 14:52:51 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/11 14:58:08 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 #define VECTOR_HPP
 #include <iostream>
 #include <stdexcept>      // std::length_error
-
+#include "enable_if.hpp"
 // #include <stack>
 #include <iterator>
-#include <vector>
+// #include <vector>
 #include <algorithm>
 #include <memory>
 #define put(x) std::cout << x << std::endl
@@ -67,6 +67,26 @@ namespace ft
 	};
 
 	template <typename T>
+	class	vreverse_iterator: public iterator<typename std::random_access_iterator_tag,
+			typename iterator_traits<T>::value_type,
+			typename iterator_traits<T>::difference_type,
+			typename iterator_traits<T>::pointer,
+			typename iterator_traits<T>::reference>
+	{
+		public:
+			typedef T															iterator_type;
+			typedef typename iterator_traits<iterator_type>::iterator_category	iterator_category;
+			typedef typename iterator_traits<iterator_type>::value_type       	value_type;
+			typedef typename iterator_traits<iterator_type>::difference_type  	difference_type;
+			typedef typename iterator_traits<iterator_type>::pointer          	pointer;
+			typedef typename iterator_traits<iterator_type>::reference        	reference;
+		vreverse_iterator():_ptr(NULL){};
+		vreverse_iterator(pointer ptr):_ptr(ptr){ };
+		private:
+			pointer _ptr;
+	};
+
+	template <typename T>
 	class vectorIterator: public iterator<typename std::random_access_iterator_tag,
 			typename iterator_traits<T>::value_type,
 			typename iterator_traits<T>::difference_type,
@@ -87,6 +107,9 @@ namespace ft
 			vectorIterator(pointer ptr):_ptr(ptr){
 			};
 			vectorIterator(vectorIterator const &rhs):_ptr(rhs._ptr){
+			};
+			pointer base() const{
+				return _ptr;
 			};
 			value_type 	&operator*() const{
 				return *_ptr;
@@ -127,7 +150,6 @@ namespace ft
 				tmp -= n;
 				return tmp;
 			};
-
 			pointer			operator->() const{
 				return _ptr;
 			};
@@ -154,6 +176,24 @@ namespace ft
 				out -= n;
 				return out;
 			};
+			template <class iter>
+				bool operator== (const vectorIterator<iter>& lhs,
+					const vectorIterator<iter>& rhs){ return lhs.base() == rhs.base();};
+			template <class iter>
+				bool operator!= (const vectorIterator<iter>& lhs,
+					const vectorIterator<iter>& rhs){ return lhs.base() != rhs.base();};
+			template <class iter>
+				bool operator< (const vectorIterator<iter>& lhs,
+					const vectorIterator<iter>& rhs){ return lhs.base() < rhs.base();};
+			template <class iter>
+				bool operator<= (const vectorIterator<iter>& lhs,
+					const vectorIterator<iter>& rhs){ return lhs.base() <= rhs.base();};
+			template <class iter>
+				bool operator> (const vectorIterator<iter>& lhs,
+					const vectorIterator<iter>& rhs){ return lhs.base() > rhs.base();};
+			template <class iter>
+				bool operator>= (const vectorIterator<iter>& lhs,
+					const vectorIterator<iter>& rhs){ return lhs.base() >= rhs.base();};
 
 	template < typename T, class Alloc = std::allocator<T> >
 	class vector
@@ -187,9 +227,11 @@ namespace ft
 					_ptr[i] = val;
 			};
 			
-			// typename std::enable_if<std::__is_input_iterator<InputIterator>::value>::type
+			// typename ft::enable_if<std::is_class<InputIterator>::value>::type
+			// typename std::enable_if<std::__is_random_access_iterator<InputIterator>::value>::type
 			template <class	InputIterator>
-			vector<T, Alloc>(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type())
+			vector<T, Alloc>(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(),
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = nullptr)
 			{
 				_size	= std::distance(first, last);
 				_cap	= _size;
