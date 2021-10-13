@@ -16,10 +16,14 @@ $(NAME) : $(OBJ)
 %.o : %.cpp  $(HEADER)
 	$(CC) $(FLAGS) -o $@ -c $<
 
+test: test.cpp
+	$(CC) test.cpp -o test
+
 clean:
 	@rm -rf $(OBJ)
 
 fclean: clean
 	@rm -rf $(NAME)
+	# rm a.out
 
 re : fclean all
