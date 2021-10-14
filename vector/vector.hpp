@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/13 11:09:03 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/14 11:24:51 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <stdexcept>      // std::length_error
 #include "enable_if.hpp"
 // #include <stack>
-#include <iterator>
+// #include <iterator>
 // #include <vector>
 #include <algorithm>
 #include <memory>
@@ -312,6 +312,7 @@ namespace ft
 			{
 				_size	= std::distance(first, last);
 				_cap	= _size;
+				_allocator = alloc;
 				_ptr	= _allocator.allocate(_cap);
 				int	j	= 0;
 				for (InputIterator it = first; it != last; it++)
@@ -442,10 +443,26 @@ namespace ft
 				return _ptr[_size - 1];
 			};
 		public: /* Modifiers Functions */
-		// template <class InputIterator>
-		// void assign (InputIterator first, InputIterator last){
-			
-		// };
+		template <class InputIterator>
+		typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type assign (InputIterator first, InputIterator last){
+			size_type _rs = std::distance(first, last);
+			if (_rs > max_size())
+					throw std::length_error("Size beyond Max_size");
+			if (_rs > _cap){
+				DestroyV();
+				_cap = _rs * 2;
+				_size = _rs;
+				_ptr = _allocator.allocate(_cap);
+				for (size_type i = 0; i < _size; i++)
+					_ptr[i] = *(first++);
+			}else{
+				for (size_type i = _rs; i < _size; i++)
+					_allocator.destroy(_ptr + i);
+				_size = _rs;
+				for (size_type i = 0; i < _size; i++)
+					_ptr[i] = *(first++);
+			}
+		};
 		void assign (size_type n, const value_type& val){
 			if (n > max_size())
 					throw std::length_error("Size beyond Max_size");
@@ -466,6 +483,13 @@ namespace ft
 				_size = n;
 				for (size_type i = 0; i < _size; i++)
 					_ptr[i] = val;
+			}
+		};
+		void push_back (const value_type& val){
+			size_type _cs = size();
+			if (_cs < _cap)
+			{
+				
 			}
 		};
 		private:
