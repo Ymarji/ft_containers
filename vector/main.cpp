@@ -107,7 +107,9 @@ int main(){
 		mv.resize(8,100);
 		mv.resize(10);
 		mv.assign(v1.begin(), v1.end());
-		mv.assign(20, 100);
+		// mv.assign(20, 100);
+		// mv.pop_back();
+		mv.push_back(42);
 		for (ft::vector<int>::iterator i = mv.begin(); i != mv.end(); i++)
 		{
 			std::cout  << *i << std::endl;

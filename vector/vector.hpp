@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/14 11:24:51 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/15 10:57:04 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -489,9 +489,25 @@ namespace ft
 			size_type _cs = size();
 			if (_cs < _cap)
 			{
-				
+				_ptr[_cs] = val;
+				_size++;
+			}
+			else{
+				_cap = size() * 2;
+				Mreallocat(_cap);
+				_ptr[_cs] = val;
+				_size++;
 			}
 		};
+		void pop_back(){
+			_allocator.destroy(_ptr + --_size);
+		};
+		iterator insert (iterator position, const value_type& val){
+			
+		};
+		void insert (iterator position, size_type n, const value_type& val);
+		template <class InputIterator>
+			void insert (iterator position, InputIterator first, InputIterator last);
 		private:
 			size_type		_size;
 			size_type		_cap;
