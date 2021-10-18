@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/15 10:57:04 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/18 10:19:44 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,7 +346,7 @@ namespace ft
 			void	DestroyV()
 			{
 				size_type _cc = capacity();
-				for (size_type i = 0; i < _CTYPE_C; i++)
+				for (size_type i = 0; i < _cc; i++)
 					_allocator.destroy(_ptr + i);
 				_allocator.deallocate(_ptr, _cc);
 			}
@@ -493,9 +493,23 @@ namespace ft
 				_size++;
 			}
 			else{
-				_cap = size() * 2;
-				Mreallocat(_cap);
-				_ptr[_cs] = val;
+				if(_cap == 0)
+				{
+					_cap = 1;
+					_ptr = _allocator.allocate(_cap);
+				}
+				else{
+					pointer tmp = _allocator.allocate(_cap * 2);
+					for (size_type i = 0; i < _size; i++)
+					{
+						tmp[i] = _ptr[i];
+						_allocator.destroy(_ptr + i);
+					}
+					_allocator.deallocate(_ptr, _cap);
+					_cap *= 2;
+					_ptr = tmp;
+				}
+				_ptr[_size] = val;
 				_size++;
 			}
 		};
