@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/18 10:19:44 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/19 14:26:49 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,17 +327,26 @@ namespace ft
 				_allocator.deallocate(_ptr, _cap);
 			};
 		private: /* utile funstion */
+			size_type	distance(iterator first, iterator end){
+				size_type _dis(0);
+				for (iterator i = first; i < end; i++)
+				{
+					_dis++;
+				}
+				return _dis;
+			};
 			void	Mreallocat(size_type n)//, value_type val = value_type())
 			{
 				size_type _cs = size();
 				allocator_type _all;
-				pointer _tmp;
-				_tmp = _ptr;
+				pointer _tmp = _allocator.allocate(_cap);
+				for (size_t i = 0; i < _cs; i++)
+					_tmp[i] = _ptr[i];
 				if (n > _cap){
-					_cap = 2 * n;
 					for (size_type i = 0; i < _cap; i++)
 						_allocator.destroy(_ptr + i);
 					_allocator.deallocate(_ptr, _cap);
+					_cap = n; // here
 					_ptr = _allocator.allocate(_cap);
 				for(size_type i = 0; i < _cs; i++)
 					_ptr[i] = _tmp[i];
@@ -493,22 +502,15 @@ namespace ft
 				_size++;
 			}
 			else{
-				if(_cap == 0)
+				_cap = ((_cap == 0)? 1 : _cap * 2);
+				pointer tmp = _allocator.allocate(_cap);
+				for (size_type i = 0; i < _size; i++)
 				{
-					_cap = 1;
-					_ptr = _allocator.allocate(_cap);
+					tmp[i] = _ptr[i];
+					_allocator.destroy(_ptr + i);
 				}
-				else{
-					pointer tmp = _allocator.allocate(_cap * 2);
-					for (size_type i = 0; i < _size; i++)
-					{
-						tmp[i] = _ptr[i];
-						_allocator.destroy(_ptr + i);
-					}
-					_allocator.deallocate(_ptr, _cap);
-					_cap *= 2;
-					_ptr = tmp;
-				}
+				_allocator.deallocate(_ptr, _cap / 2);
+				_ptr = tmp;
 				_ptr[_size] = val;
 				_size++;
 			}
@@ -517,11 +519,47 @@ namespace ft
 			_allocator.destroy(_ptr + --_size);
 		};
 		iterator insert (iterator position, const value_type& val){
-			
+			size_type _pos = distance(begin(), position);
+			size_type _csz = size();
+			size_type _ccp = capacity();
+			if (_csz != 0){
+				if (_csz >= _ccp)
+					Mreallocat(_csz * 2);
+				for (size_type i = size(); i > _pos; i--)
+					_ptr[i] = _ptr[i - 1];
+				_ptr[_pos] = val;
+				_size++;
+			}
+			else
+				push_back(val);
+			return iterator(&_ptr[_pos]);
+		}
+		void insert (iterator position, size_type n, const value_type& val){	
+			int i = 0;
+			while (i < n){
+				insert(position, val);
+				i++;
+			}
 		};
-		void insert (iterator position, size_type n, const value_type& val);
+		
 		template <class InputIterator>
-			void insert (iterator position, InputIterator first, InputIterator last);
+			typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last){
+				size_type _dis = distance(first, last); //todo
+				typename InputIterator::pointer _tmp = _allocator.allocate(_dis);
+				int cp = 0;
+				for (InputIterator i = first; i != last; i++)
+				{
+					_tmp[cp] = *i;
+					cp++;
+				}
+				int i = _dis - 1;
+				while ( i >= 0)
+				{
+					put("he" << i);
+					insert(position, _tmp[i]);
+					i--;
+				}
+			};
 		private:
 			size_type		_size;
 			size_type		_cap;
