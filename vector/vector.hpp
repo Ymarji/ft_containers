@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/19 14:26:49 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/22 12:04:42 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,56 @@
 #include "enable_if.hpp"
 // #include <stack>
 // #include <iterator>
-// #include <vector>
+#include <vector>
 #include <algorithm>
 #include <memory>
 #define put(x) std::cout << x << std::endl
 namespace ft
 {
-	// template <bool Cond, class T = void>
-	// typename std::enable_if<std::is_integral<T>::value,bool>::type
-	// struct enable_if{
-		
-	// };
-	
+	template <class InputIterator1, class InputIterator2>
+		bool equal (InputIterator1 first1, InputIterator1 last1,
+				InputIterator2 first2){
+					while (first1!=last1){
+						if (!(*first1 == *first2))
+							return false;
+					++first1; ++first2;
+					}
+					return true;
+				};
+	template <class InputIterator1, class InputIterator2, class BinaryPredicate>
+		bool equal (InputIterator1 first1, InputIterator1 last1,
+				InputIterator2 first2, BinaryPredicate pred){
+					while (first1!=last1){
+						if (!pred(*first1,*first2))
+							return false;
+					++first1; ++first2;
+					}
+					return true;
+				};
+
+	template <class InputIterator1, class InputIterator2>
+		bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1,
+			InputIterator2 first2, InputIterator2 last2){
+			while (first1!=last1)
+			{
+				if (first2==last2 || *first2<*first1) return false;
+				else if (*first1<*first2) return true;
+				++first1; ++first2;
+			}
+			return (first2!=last2);
+		}
+	template <class InputIterator1, class InputIterator2, class Compare>
+		bool lexicographical_compare (InputIterator1 first1, InputIterator1 last1, 
+			InputIterator2 first2, InputIterator2 last2,
+			Compare comp){
+			while (first1!=last1)
+			{
+				if (first2==last2 || comp(*first2, *first1)) return false;
+				else if (comp(*first1, *first2)) return true;
+				++first1; ++first2;
+			}
+			return (first2!=last2);
+		};
 	template<class Iterator>
 	struct iterator_traits
 	{
@@ -327,9 +365,10 @@ namespace ft
 				_allocator.deallocate(_ptr, _cap);
 			};
 		private: /* utile funstion */
-			size_type	distance(iterator first, iterator end){
+		template <typename _Iter>
+			size_type	distance(_Iter first, _Iter end){
 				size_type _dis(0);
-				for (iterator i = first; i < end; i++)
+				for (_Iter i = first; i < end; i++)
 				{
 					_dis++;
 				}
@@ -419,11 +458,13 @@ namespace ft
 			};
 		public: /* Vector Operators */
 			vector& operator= (const vector& rhs){
+				if(_cap != 0)
+					_allocator.deallocate(_ptr, _cap);
 				this->_allocator = rhs._allocator;
 				this->_cap = rhs._cap;
 				this->_size = rhs._size;
 				_ptr = _allocator.allocate(_cap);
-				for (size_type i = 0 ; i < _cap; i++)
+				for (size_type i = 0 ; i < _size; i++)
 					_ptr[i] = rhs._ptr[i];
 				return *this;
 			};
@@ -555,10 +596,44 @@ namespace ft
 				int i = _dis - 1;
 				while ( i >= 0)
 				{
-					put("he" << i);
 					insert(position, _tmp[i]);
 					i--;
 				}
+				_allocator.deallocate(_tmp, _dis);
+			};
+			iterator erase (iterator position){
+				size_type _dis = distance(begin(), position);
+				_allocator.destroy(_ptr + _dis);
+				--_size;
+				for (size_type i = _dis; i < size(); i++)
+					_ptr[i] = _ptr[i + 1];
+				return (_ptr + _dis);
+			};
+			iterator erase (iterator first, iterator last){
+				size_type _dis = distance(begin(), first);
+				size_type _n = distance(first, last);
+				for (size_type i = _dis; i < _n; i++)
+					_allocator.destroy(_ptr + i);
+				_size -= _n;
+				for (size_type i = _dis; i < size(); i++)
+					_ptr[i] = _ptr[i + _n];
+				return (_ptr + _dis);
+			};
+			void swap (vector& x){
+				vector<T> tmp;
+				tmp = *this;
+				*this = x;
+				x = tmp;
+			};
+			void clear(){
+				for (size_t i = 0; i < _size; i++)
+					_allocator.destroy(_ptr + i);
+				_size = 0;
+			};
+			
+			/* Get_allocator*/
+			allocator_type get_allocator() const{
+				return _allocator;
 			};
 		private:
 			size_type		_size;
@@ -566,7 +641,29 @@ namespace ft
 			pointer			_ptr;
 			allocator_type	_allocator;
 	};
-} 
+	template <class T, class Alloc>
+		bool operator== (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+			return (lhs.size() == rhs.size()) && ft::equal(lhs.begin(), lhs.end(), rhs.begin());
+		};
+		
+	template <class T, class Alloc>
+		bool operator!= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+			return !(lhs == rhs);
+		};
+	template <class T, class Alloc>
+		bool operator<  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+			return	ft::lexicographical_compare(lhs.begin(), lhs.end(), rhs.begin(), rhs.end());
+		};
+	template <class T, class Alloc>
+		bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+			return (rhs > lhs)
+		};
+	template <class T, class Alloc>
+		bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+			return !(rhs < lhs);
+		};
+}
+
 #endif /* VECTOR_HPP */
 
 	// template<class T>

@@ -41,7 +41,7 @@
 	
 // }
 int main(){
-	std::vector<int> v1;
+	// std::vector<int> v1;
 	// v1.push_back(1);
 	// v1.push_back(2);
 	// v1.push_back(3);
@@ -54,27 +54,27 @@ int main(){
 	// v1.insert(v1.begin(), 42);
 	// std::cout  << v1.capacity() << " " << v1.size() << std::endl;
 
-		v1.push_back(1);
+		// v1.push_back(1337);
 		
-		v1.push_back(2);
+		// v1.push_back(2);
 
-		v1.push_back(3);
+		// v1.push_back(3);
 
-		v1.push_back(4);
+		// v1.push_back(4);
 
-		v1.push_back(5);
-
+		// v1.push_back(5337);
+		// v1.erase(v1.begin() , v1.end());
 		// v1.resize(6);
 		// v1.resize(8,100);
 		// std::cout  <<"cap : " <<  v1.capacity() << " Size : " << v1.size() << std::endl;
 		// v1.resize(10);
 		// v1.reserve(100);
-		v1.insert(v1.begin(), v1.begin(), v1.end());
-		std::cout  <<"cap : " <<  v1.capacity() << " Size : " << v1.size() << std::endl;
-		for (std::vector<int>::iterator i = v1.begin(); i != v1.end(); i++)
-		{
-			std::cout  << *i << std::endl;
-		}
+		// v1.insert(v1.begin(), v1.begin(), v1.end());
+		// std::cout  <<"cap : " <<  v1.capacity() << " Size : " << v1.size() << std::endl;
+		// for (std::vector<int>::iterator i = v1.begin(); i != v1.end(); i++)
+		// {
+		// 	std::cout  << *i << std::endl;
+		// }
 
 	// // // v1.insert(v1.begin() + 2 , 1337);
 	// put("-------------------std::vector::print-----------------");
@@ -118,30 +118,44 @@ int main(){
 	// ft::vector<int>::iterator it = v.begin();
 	// it++;
 	{
+		
 		// std::vector<int> v(v1.begin(), v1.end());
 		// for (std::vector<int>::reverse_iterator i = v.rbegin(); i != v.rend(); i++)
 		// {
 		// 	std::cout  << *i << std::endl;
 		// }
 		put("------------------- ft::vector::print-----------------");
-		ft::vector<int> mv;
+		// ft::vector<int> mv;
+		// ft::vector<int> mv1;
 		// for (ft::vector<int>::reverse_iterator i = mv.rbegin(); i != mv.rend(); i++)
 		// {
 		// 	std::cout  << *i << std::endl;
 		// }
 		put("------------------- ft::vector::re::print-----------------");
-
-		mv.push_back(1);
+		char foo[]="applc";
+		char bar[]="applc";
+		std::cout << std::boolalpha << std::lexicographical_compare(foo,foo+5,bar,bar+5);
+		// mv.push_back(1);
 		
-		mv.push_back(2);
+		// mv.push_back(2);
 
-		mv.push_back(3);
+		// mv.push_back(3);
 
-		mv.push_back(4);
+		// mv.push_back(4);
 
-		mv.push_back(5);
+		// mv.push_back(5);
+		
 
-		mv.insert(mv.begin(),mv.begin(), mv.end());
+		// mv1.push_back(3563);
+
+		// mv1.push_back(4563);
+
+		// mv1.push_back(5563);
+		// mv.erase(mv.begin() + 5);
+		// mv.erase(mv.begin() , mv.end() - 1);
+		// mv.swap(mv1);
+
+		// mv.insert(mv.begin(),v1.begin(), v1.end());
 		// mv.resize(6);
 		// mv.resize(8,100);
 		// std::cout  <<"cap : " <<  mv.capacity() << " Size : " << mv.size() << std::endl;
@@ -152,17 +166,69 @@ int main(){
 		// mv.insert(mv.begin() + 3,44);
 		// mv.insert(mv.begin(),45);
 		// mv.insert(mv.begin(), 15, 45);
-		for (ft::vector<int>::iterator i = mv.begin(); i != mv.end(); i++)
-		{
-			std::cout  << *i << std::endl;
-		}
-		std::cout  <<"cap : " <<  mv.capacity() << " Size : " << mv.size() << std::endl;
+		// put("-------------------mv-----------------");
+
+		// for (ft::vector<int>::iterator i = mv.begin(); i != mv.end(); i++)
+		// {
+		// 	std::cout  << *i << std::endl;
+		// }
+		// std::cout  <<"cap : " <<  mv.capacity() << " Size : " << mv.size() << std::endl;
+		// put("-------------------mv1-----------------");
+		// for (ft::vector<int>::iterator i = mv1.begin(); i != mv1.end(); i++)
+		// {
+		// 	std::cout  << *i << std::endl;
+		// }
+		// std::cout  <<"cap : " <<  mv1.capacity() << " Size : " << mv1.size() << std::endl;
 	// 	std::cout << *(mv.begin())  << std::endl;
 	// 	ft::vector<int>::iterator it = mv.begin();
 	// 	it++;
 	}
 	{
+		// {{
+		// 	std::vector<int> foo ;   // three ints with a value of 100
+		// 	std::vector<int> bar ;   // five ints with a value of 200
+
+		// 	foo.push_back(1337);
+
+			
+		// std::cout  <<"be4 foo cap : " <<  foo.capacity() << " Size : " << foo.size() << std::endl;
+		// std::cout  <<"be4 bar cap : " <<  bar.capacity() << " Size : " << bar.size() << std::endl;
+		// 	foo.swap(bar);
+
+		// 	std::cout << "foo contains:";
+		// 	for (unsigned i=0; i<foo.size(); i++)
+		// 		std::cout << ' ' << foo[i];
+		// 	std::cout << '\n';
+
+		// 	std::cout << "bar contains:";
+		// 	for (unsigned i=0; i<bar.size(); i++)
+		// 		std::cout << ' ' << bar[i];
+		// 	std::cout << '\n';
+		// std::cout  <<"after foo cap : " <<  foo.capacity() << " Size : " << foo.size() << std::endl;
+		// std::cout  <<"after bar cap: " <<  bar.capacity() << " Size : " << bar.size() << std::endl;
+
+		// }
 		// put("-------------------reverse ft::vector::print-----------------");
+		// ft::vector<int> foo ;   // three ints with a value of 100
+		// ft::vector<int> bar ;   // five ints with a value of 200
+	
+		// 	foo.push_back(1337);
+		// std::cout  <<"be4 foo cap : " <<  foo.capacity() << " Size : " << foo.size() << std::endl;
+		// std::cout  <<"be4 bar : " <<  bar.capacity() << " Size : " << bar.size() << std::endl;
+		// foo.swap(bar);
+
+		// std::cout << "foo contains:";
+		// for (unsigned i=0; i<foo.size(); i++)
+		// 	std::cout << ' ' << foo[i];
+		// std::cout << '\n';
+
+		// std::cout << "bar contains:";
+		// for (unsigned i=0; i<bar.size(); i++)
+		// 	std::cout << ' ' << bar[i];
+		// std::cout << '\n';
+		// std::cout  <<"after foo cap : " <<  foo.capacity() << " Size : " << foo.size() << std::endl;
+		// std::cout  <<"after bar : " <<  bar.capacity() << " Size : " << bar.size() << std::endl;
+		// }
 		// ft::vector<int> mv(10, 1);
 		// for (ft::vector<int>::reverse_iterator i = mv.rbegin(); i != mv.rend(); i++)
 		// {
