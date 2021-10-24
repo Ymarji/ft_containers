@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/22 12:04:42 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/24 11:39:09 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,19 @@
 #include <stdexcept>      // std::length_error
 #include "enable_if.hpp"
 // #include <stack>
-// #include <iterator>
-#include <vector>
+#include <iterator>
+// #include <vector>
 #include <algorithm>
 #include <memory>
 #define put(x) std::cout << x << std::endl
 namespace ft
 {
+	struct input_iterator_tag { };
+	struct output_iterator_tag { };
+	struct forward_iterator_tag : public input_iterator_tag { };
+	struct bidirectional_iterator_tag : public forward_iterator_tag { };
+	struct random_access_iterator_tag : public bidirectional_iterator_tag { };
+	
 	template <class InputIterator1, class InputIterator2>
 		bool equal (InputIterator1 first1, InputIterator1 last1,
 				InputIterator2 first2){
@@ -129,6 +135,10 @@ namespace ft
 			reference operator*() const{
 				return *_iter;
 			}
+			vreverse_iterator operator=( const vreverse_iterator &rhs){
+				this->_ptr = rhs._ptr;
+				return *this;
+			}
 			vreverse_iterator operator+ (difference_type n) const{
 				vreverse_iterator tmp(_iter - n);
 				return tmp;
@@ -226,6 +236,10 @@ namespace ft
 			iterator_type base() const{
 				return _ptr;
 			};
+			vectorIterator operator=( const vectorIterator &rhs){
+				this->_ptr = rhs._ptr;
+				return *this;
+			}
 			reference operator*() const{
 				return *_ptr;
 			};
@@ -322,7 +336,7 @@ namespace ft
 			typedef typename 	allocator_type::const_reference				const_reference;
 			typedef typename 	allocator_type::difference_type				difference_type;
 			typedef 			vectorIterator<pointer>						iterator;
-			typedef 			vreverse_iterator<iterator>						reverse_iterator;
+			typedef 			vreverse_iterator<iterator>					reverse_iterator;
 			typedef 			vectorIterator<const_pointer>				const_iterator;
 			typedef typename 	allocator_type::size_type					size_type;
 		public: /* class Constructor and destructor */
@@ -495,7 +509,7 @@ namespace ft
 		public: /* Modifiers Functions */
 		template <class InputIterator>
 		typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type assign (InputIterator first, InputIterator last){
-			size_type _rs = std::distance(first, last);
+			size_type _rs = distance(first, last);
 			if (_rs > max_size())
 					throw std::length_error("Size beyond Max_size");
 			if (_rs > _cap){
@@ -594,7 +608,7 @@ namespace ft
 					cp++;
 				}
 				int i = _dis - 1;
-				while ( i >= 0)
+				while ( i < _dis)
 				{
 					insert(position, _tmp[i]);
 					i--;
@@ -656,11 +670,15 @@ namespace ft
 		};
 	template <class T, class Alloc>
 		bool operator>  (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
-			return (rhs > lhs)
+			return (rhs < lhs);
 		};
 	template <class T, class Alloc>
 		bool operator<= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
 			return !(rhs < lhs);
+		};
+	template <class T, class Alloc>
+		bool operator>= (const vector<T,Alloc>& lhs, const vector<T,Alloc>& rhs){
+			return !(lhs < rhs);
 		};
 }
 

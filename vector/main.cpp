@@ -41,214 +41,57 @@
 	
 // }
 int main(){
-	// std::vector<int> v1;
-	// v1.push_back(1);
-	// v1.push_back(2);
-	// v1.push_back(3);
-	// v1.push_back(4);
-	// v1.push_back(5);
-	// v1.push_back(6);
-	// v1.push_back(7);
-	// v1.push_back(8);
-	// std::cout  << v1.capacity() << " " << v1.size() << std::endl;
-	// v1.insert(v1.begin(), 42);
-	// std::cout  << v1.capacity() << " " << v1.size() << std::endl;
+	ft::vector<int> int_arr(5, 10);
 
-		// v1.push_back(1337);
-		
-		// v1.push_back(2);
+	typedef ft::vector<int>::iterator Iterator;
 
-		// v1.push_back(3);
+	put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
+	put("---------------------- push back it vector ----------------------");
+		for(int  i = 0; i < 4; i++)
+			int_arr.push_back(i + 1);
 
-		// v1.push_back(4);
 
-		// v1.push_back(5337);
-		// v1.erase(v1.begin() , v1.end());
-		// v1.resize(6);
-		// v1.resize(8,100);
-		// std::cout  <<"cap : " <<  v1.capacity() << " Size : " << v1.size() << std::endl;
-		// v1.resize(10);
-		// v1.reserve(100);
-		// v1.insert(v1.begin(), v1.begin(), v1.end());
-		// std::cout  <<"cap : " <<  v1.capacity() << " Size : " << v1.size() << std::endl;
-		// for (std::vector<int>::iterator i = v1.begin(); i != v1.end(); i++)
-		// {
-		// 	std::cout  << *i << std::endl;
-		// }
+	put("----------------------Print Vector using itertor----------------------");
+	put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
+		for(Iterator it = int_arr.begin(); it != int_arr.end(); it++)
+			put(*it);
 
-	// // // v1.insert(v1.begin() + 2 , 1337);
-	// put("-------------------std::vector::print-----------------");
-	// // int a[] = { 1 , 2 ,3};
-	
-	// allocatora();
-	// v1.assign(2, 200);
-
-	// for (int i = 0; i < 10; i++)
-	// {
-	// 	std::cout  << v1[i] << std::endl;
-	// }
-	// put("------------------- ft::vector::print-----------------");
-	// std::vector<int> v(v1.begin(), v1.end());
-	// std::vector<int> v(5, 100);
-	// 	for (int i = 0; i < 10; i++)
-	// {
-	// 	std::cout  << v[i] << std::endl;
-	// }
-	// std::cout  << v.capacity() << " " << v.size() << std::endl;
-	// put("------------------- ft::vector::print-----------------");
-	// ft::vector<int> v(v1.begin(), v1.end());
-	// // ft::vector<int> v(5, 100);
-	// for (ft::vector<int>::iterator i = v.begin(); i != v.end(); i++)
-	// {
-	// 	// std::cout  << i.base() << std::endl;
-	// 	std::cout  << *i << std::endl;
-	// }
-	// std::cout  << v.capacity() << " " << v.size() << std::endl;
-	// put("------------------- ft::vector::re::print-----------------");
-	// // // v.resize(5);
-	// // // v.resize(8,100);
-	// // // v.resize(10);
-	// v.assign(2, 200);
-	// for (ft::vector<int>::iterator i = v.begin(); i != v.end(); i++)
-	// {
-	// 	std::cout  << *i << std::endl;
-	// }
-	// std::cout  << v.capacity() << " " << v.size() << std::endl;
-	// std::cout << *(v.begin())  << std::endl;
-	// ft::vector<int>::iterator it = v.begin();
-	// it++;
-	{
-		
-		// std::vector<int> v(v1.begin(), v1.end());
-		// for (std::vector<int>::reverse_iterator i = v.rbegin(); i != v.rend(); i++)
-		// {
-		// 	std::cout  << *i << std::endl;
-		// }
-		put("------------------- ft::vector::print-----------------");
-		// ft::vector<int> mv;
-		// ft::vector<int> mv1;
-		// for (ft::vector<int>::reverse_iterator i = mv.rbegin(); i != mv.rend(); i++)
-		// {
-		// 	std::cout  << *i << std::endl;
-		// }
-		put("------------------- ft::vector::re::print-----------------");
-		char foo[]="applc";
-		char bar[]="applc";
-		std::cout << std::boolalpha << std::lexicographical_compare(foo,foo+5,bar,bar+5);
-		// mv.push_back(1);
-		
-		// mv.push_back(2);
-
-		// mv.push_back(3);
-
-		// mv.push_back(4);
-
-		// mv.push_back(5);
-		
-
-		// mv1.push_back(3563);
-
-		// mv1.push_back(4563);
-
-		// mv1.push_back(5563);
-		// mv.erase(mv.begin() + 5);
-		// mv.erase(mv.begin() , mv.end() - 1);
-		// mv.swap(mv1);
-
-		// mv.insert(mv.begin(),v1.begin(), v1.end());
-		// mv.resize(6);
-		// mv.resize(8,100);
-		// std::cout  <<"cap : " <<  mv.capacity() << " Size : " << mv.size() << std::endl;
-		// mv.resize(10);
-		// mv.reserve(100);
-		// mv.insert(mv.begin() + 2,42);
-		// mv.insert(mv.begin(),43);
-		// mv.insert(mv.begin() + 3,44);
-		// mv.insert(mv.begin(),45);
-		// mv.insert(mv.begin(), 15, 45);
-		// put("-------------------mv-----------------");
-
-		// for (ft::vector<int>::iterator i = mv.begin(); i != mv.end(); i++)
-		// {
-		// 	std::cout  << *i << std::endl;
-		// }
-		// std::cout  <<"cap : " <<  mv.capacity() << " Size : " << mv.size() << std::endl;
-		// put("-------------------mv1-----------------");
-		// for (ft::vector<int>::iterator i = mv1.begin(); i != mv1.end(); i++)
-		// {
-		// 	std::cout  << *i << std::endl;
-		// }
-		// std::cout  <<"cap : " <<  mv1.capacity() << " Size : " << mv1.size() << std::endl;
-	// 	std::cout << *(mv.begin())  << std::endl;
-	// 	ft::vector<int>::iterator it = mv.begin();
-	// 	it++;
+	put("----------------------Vector member function----------------------");
+	put("max_size : " << int_arr.max_size());
+	int_arr.resize(2);
+	int_arr.resize(8, 3);
+	int_arr.resize(12);
+	int_arr.reserve(24);
+	put("----------------------Print Vector using itertor----------------------");
+	put("is empty : "<< std::boolalpha << int_arr.empty());
+	put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
+		for(int i = 0; i < int_arr.size(); i++){
+			put(int_arr.at(i));
+		}
+	put("----------------------New Vector member function----------------------");
+	ft::vector<int> copy;
+	copy.assign(int_arr.begin(), int_arr.end());
+	put("is empty : "<< std::boolalpha << copy.empty());
+	for (size_t i = 0; i < 5; i++)
+		copy.pop_back();
+	put("copy Size : " << copy.size() << " Cap : "<< copy.capacity());
+	put("----------------------Print Vector using itertor----------------------");
+		for(int i = 0; i <= copy.size(); i++){
+			put(copy.at(i));
+		}
+	put("----------------------Print Vector using itertor----------------------");
+	copy.insert(copy.begin() + 2, int_arr.begin(), int_arr.end());
+	copy.erase(copy.begin() + 10, copy.end());
+	put("copy Size : " << copy.size() << " Cap : "<< copy.capacity());
+	for(int i = 0; i < copy.size(); i++){
+		put(copy.at(i));
 	}
-	{
-		// {{
-		// 	std::vector<int> foo ;   // three ints with a value of 100
-		// 	std::vector<int> bar ;   // five ints with a value of 200
-
-		// 	foo.push_back(1337);
-
-			
-		// std::cout  <<"be4 foo cap : " <<  foo.capacity() << " Size : " << foo.size() << std::endl;
-		// std::cout  <<"be4 bar cap : " <<  bar.capacity() << " Size : " << bar.size() << std::endl;
-		// 	foo.swap(bar);
-
-		// 	std::cout << "foo contains:";
-		// 	for (unsigned i=0; i<foo.size(); i++)
-		// 		std::cout << ' ' << foo[i];
-		// 	std::cout << '\n';
-
-		// 	std::cout << "bar contains:";
-		// 	for (unsigned i=0; i<bar.size(); i++)
-		// 		std::cout << ' ' << bar[i];
-		// 	std::cout << '\n';
-		// std::cout  <<"after foo cap : " <<  foo.capacity() << " Size : " << foo.size() << std::endl;
-		// std::cout  <<"after bar cap: " <<  bar.capacity() << " Size : " << bar.size() << std::endl;
-
-		// }
-		// put("-------------------reverse ft::vector::print-----------------");
-		// ft::vector<int> foo ;   // three ints with a value of 100
-		// ft::vector<int> bar ;   // five ints with a value of 200
-	
-		// 	foo.push_back(1337);
-		// std::cout  <<"be4 foo cap : " <<  foo.capacity() << " Size : " << foo.size() << std::endl;
-		// std::cout  <<"be4 bar : " <<  bar.capacity() << " Size : " << bar.size() << std::endl;
-		// foo.swap(bar);
-
-		// std::cout << "foo contains:";
-		// for (unsigned i=0; i<foo.size(); i++)
-		// 	std::cout << ' ' << foo[i];
-		// std::cout << '\n';
-
-		// std::cout << "bar contains:";
-		// for (unsigned i=0; i<bar.size(); i++)
-		// 	std::cout << ' ' << bar[i];
-		// std::cout << '\n';
-		// std::cout  <<"after foo cap : " <<  foo.capacity() << " Size : " << foo.size() << std::endl;
-		// std::cout  <<"after bar : " <<  bar.capacity() << " Size : " << bar.size() << std::endl;
-		// }
-		// ft::vector<int> mv(10, 1);
-		// for (ft::vector<int>::reverse_iterator i = mv.rbegin(); i != mv.rend(); i++)
-		// {
-		// 	std::cout  << *i << std::endl;
-		// }
-		// put("-------------------reverse ft::vector::re::print-----------------");
-		// mv.resize(5);
-		// // mv.resize(8,100);
-		// // mv.resize(10);
-		// // mv.assign(v1.begin(), v1.end());
-		// // mv.assign(20, 100);
-		// // mv.pop_back();
-		// mv.push_back(42);
-		// for (ft::vector<int>::iterator i = mv.begin(); i != mv.end(); i++)
-		// {
-		// 	std::cout  << *i << std::endl;
-		// }
-		// std::cout << mv.capacity() << "  " << mv.size() << std::endl;
-		// // ft::vector<int>::iterator it = mv.begin();
-		// // it++;
-	}
+	put("----------------------Print Vector using itertor----------------------");
+	int_arr.clear();
+	put("is empty : "<< std::boolalpha << int_arr.empty());
+	put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
+		for(int i = 0; i < int_arr.size(); i++){
+			put(int_arr.at(i));
+		}
     return 0;
 }
