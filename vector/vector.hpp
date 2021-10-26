@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/24 11:39:09 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/25 17:31:18 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "enable_if.hpp"
 // #include <stack>
 #include <iterator>
-// #include <vector>
+#include <vector>
 #include <algorithm>
 #include <memory>
 #define put(x) std::cout << x << std::endl
@@ -133,7 +133,7 @@ namespace ft
 				return _iter;
 			};
 			reference operator*() const{
-				return *_iter;
+				return *(--base());
 			}
 			vreverse_iterator operator=( const vreverse_iterator &rhs){
 				this->_ptr = rhs._ptr;
@@ -177,7 +177,7 @@ namespace ft
 				return &(operator*());
 			}
 			reference operator[] (difference_type n) const{
-				return base()[-n-1];
+				return *(*this + n);
 			};
 			~vreverse_iterator(){};
 		private:
@@ -420,10 +420,10 @@ namespace ft
 				return const_iterator(_ptr);
 			};
 			reverse_iterator rbegin(){
-				return reverse_iterator(end() - 1);
+				return reverse_iterator(end());
 			};
 			reverse_iterator rend(){
-				return reverse_iterator(begin() - 1);
+				return reverse_iterator(begin());
 			};
 			iterator end(){
 				return iterator(_ptr + _size);

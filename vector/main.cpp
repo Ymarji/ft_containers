@@ -42,56 +42,64 @@
 // }
 int main(){
 	ft::vector<int> int_arr(5, 10);
+	ft::vector<int> v;
+	v.push_back(1);
+	v.push_back(2);
+	v.push_back(3);
 
-	typedef ft::vector<int>::iterator Iterator;
+	ft::vector<int>::reverse_iterator it = v.rbegin();
+	put("iter : " << it[0]);
+	put("base : " << *it.base());
+	
+	// typedef ft::vector<int>::iterator Iterator;
 
-	put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
-	put("---------------------- push back it vector ----------------------");
-		for(int  i = 0; i < 4; i++)
-			int_arr.push_back(i + 1);
+	// put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
+	// put("---------------------- push back it vector ----------------------");
+	// 	for(int  i = 0; i < 4; i++)
+	// 		int_arr.push_back(i + 1);
 
 
-	put("----------------------Print Vector using itertor----------------------");
-	put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
-		for(Iterator it = int_arr.begin(); it != int_arr.end(); it++)
-			put(*it);
+	// put("----------------------Print Vector using itertor----------------------");
+	// put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
+	// 	for(Iterator it = int_arr.begin(); it != int_arr.end(); it++)
+	// 		put(*it);
 
-	put("----------------------Vector member function----------------------");
-	put("max_size : " << int_arr.max_size());
-	int_arr.resize(2);
-	int_arr.resize(8, 3);
-	int_arr.resize(12);
-	int_arr.reserve(24);
-	put("----------------------Print Vector using itertor----------------------");
-	put("is empty : "<< std::boolalpha << int_arr.empty());
-	put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
-		for(int i = 0; i < int_arr.size(); i++){
-			put(int_arr.at(i));
-		}
-	put("----------------------New Vector member function----------------------");
-	ft::vector<int> copy;
-	copy.assign(int_arr.begin(), int_arr.end());
-	put("is empty : "<< std::boolalpha << copy.empty());
-	for (size_t i = 0; i < 5; i++)
-		copy.pop_back();
-	put("copy Size : " << copy.size() << " Cap : "<< copy.capacity());
-	put("----------------------Print Vector using itertor----------------------");
-		for(int i = 0; i <= copy.size(); i++){
-			put(copy.at(i));
-		}
-	put("----------------------Print Vector using itertor----------------------");
-	copy.insert(copy.begin() + 2, int_arr.begin(), int_arr.end());
-	copy.erase(copy.begin() + 10, copy.end());
-	put("copy Size : " << copy.size() << " Cap : "<< copy.capacity());
-	for(int i = 0; i < copy.size(); i++){
-		put(copy.at(i));
-	}
-	put("----------------------Print Vector using itertor----------------------");
-	int_arr.clear();
-	put("is empty : "<< std::boolalpha << int_arr.empty());
-	put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
-		for(int i = 0; i < int_arr.size(); i++){
-			put(int_arr.at(i));
-		}
+	// put("----------------------Vector member function----------------------");
+	// put("max_size : " << int_arr.max_size());
+	// int_arr.resize(2);
+	// int_arr.resize(8, 3);
+	// int_arr.resize(12);
+	// int_arr.reserve(24);
+	// put("----------------------Print Vector using itertor----------------------");
+	// put("is empty : "<< std::boolalpha << int_arr.empty());
+	// put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
+	// 	for(int i = 0; i < int_arr.size(); i++){
+	// 		put(int_arr.at(i));
+	// 	}
+	// put("----------------------New Vector member function----------------------");
+	// ft::vector<int> copy;
+	// copy.assign(int_arr.begin(), int_arr.end());
+	// put("is empty : "<< std::boolalpha << copy.empty());
+	// for (size_t i = 0; i < 5; i++)
+	// 	copy.pop_back();
+	// put("copy Size : " << copy.size() << " Cap : "<< copy.capacity());
+	// put("----------------------Print Vector using itertor----------------------");
+	// 	for(int i = 0; i <= copy.size(); i++){
+	// 		put(copy.at(i));
+	// 	}
+	// put("----------------------Print Vector using itertor----------------------");
+	// copy.insert(copy.begin() + 2, int_arr.begin(), int_arr.end());
+	// copy.erase(copy.begin() + 10, copy.end());
+	// put("copy Size : " << copy.size() << " Cap : "<< copy.capacity());
+	// for(int i = 0; i < copy.size(); i++){
+	// 	put(copy.at(i));
+	// }
+	// put("----------------------Print Vector using itertor----------------------");
+	// int_arr.clear();
+	// put("is empty : "<< std::boolalpha << int_arr.empty());
+	// put("int_arr Size : " << int_arr.size() << " Cap : "<< int_arr.capacity());
+	// 	for(int i = 0; i < int_arr.size(); i++){
+	// 		put(int_arr.at(i));
+	// 	}
     return 0;
 }
