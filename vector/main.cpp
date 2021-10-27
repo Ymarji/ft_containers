@@ -41,15 +41,36 @@
 	
 // }
 int main(){
-	ft::vector<int> int_arr(5, 10);
-	ft::vector<int> v;
-	v.push_back(1);
-	v.push_back(2);
-	v.push_back(3);
+	typedef std::vector<int>::iterator Iterator;
 
-	ft::vector<int>::reverse_iterator it = v.rbegin();
-	put("iter : " << it[0]);
-	put("base : " << *it.base());
+	std::vector<int> stv;
+	stv.push_back(1);
+	stv.push_back(2);
+	stv.push_back(3);
+	stv.push_back(4);
+	stv.push_back(5);
+	stv.push_back(6);
+	stv.push_back(7);
+	stv.push_back(8);
+	put("int_arr Size : " << stv.size() << " Cap : "<< stv.capacity());
+	stv.resize(19,55);
+	// stv.reserve(91);
+	// stv.insert(stv.end() - 1, 9);
+	// stv.assign(16, 10);
+		for(Iterator it = stv.begin(); it != stv.end(); it++)
+			put(*it);
+	put("int_arr Size : " << stv.size() << " Cap : "<< stv.capacity());
+
+
+	// ft::vector<int> int_arr(5, 10);
+	// ft::vector<int> v;
+	// v.push_back(1);
+	// v.push_back(2);
+	// v.push_back(3);
+
+	// ft::vector<int>::reverse_iterator it = v.rbegin();
+	// put("iter : " << it[0]);
+	// put("base : " << *it.base());
 	
 	// typedef ft::vector<int>::iterator Iterator;
 

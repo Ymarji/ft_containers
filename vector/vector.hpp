@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/25 17:31:18 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/27 14:20:59 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -450,9 +450,10 @@ namespace ft
 						_allocator.destroy(_ptr + i);
 					_size = n;
 					}
-				else if(n > _size)
+				else if(n > _size) // todo : fix cap
 				{
-					Mreallocat(n);//, val);
+					if (n > _cap)
+						reserve((n > _cap * 2)? n : _size * 2);
 					size_type _cs = size();
 					if (n > _cs)
 						for (size_type i = _cs; i < n; i++)
@@ -468,7 +469,16 @@ namespace ft
 				if (n > max_size())
 					throw std::length_error("Size beyond Max_size");
 				else if(n > _ccap)
-					Mreallocat(n);
+				{
+					pointer _tmp = _allocator.allocate(n);
+					for (size_t i = 0; i < _cs; i++)
+					_tmp[i] = _ptr[i];
+					for (size_type i = 0; i < _cap; i++)
+						_allocator.destroy(_ptr + i);
+					_allocator.deallocate(_ptr, _cap);
+					_cap = n;
+					_ptr = _tmp;
+				}
 			};
 		public: /* Vector Operators */
 			vector& operator= (const vector& rhs){
@@ -507,14 +517,15 @@ namespace ft
 				return _ptr[_size - 1];
 			};
 		public: /* Modifiers Functions */
-		template <class InputIterator>
+		template <class InputIterator> ////// Todo : fixe assigne destroy
 		typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type assign (InputIterator first, InputIterator last){
 			size_type _rs = distance(first, last);
 			if (_rs > max_size())
 					throw std::length_error("Size beyond Max_size");
 			if (_rs > _cap){
 				DestroyV();
-				_cap = _rs * 2;
+				// _cap = _rs * 2;
+				_cap = _rs;
 				_size = _rs;
 				_ptr = _allocator.allocate(_cap);
 				for (size_type i = 0; i < _size; i++)
@@ -532,7 +543,8 @@ namespace ft
 					throw std::length_error("Size beyond Max_size");
 			if (n > _cap){
 				DestroyV();
-				_cap = n * 2;
+				// _cap = n * 2;
+				_cap = n;
 				_size = n;
 				_ptr = _allocator.allocate(_cap);
 				for (size_type i = 0; i < _size; i++)
@@ -575,18 +587,18 @@ namespace ft
 		};
 		iterator insert (iterator position, const value_type& val){
 			size_type _pos = distance(begin(), position);
-			size_type _csz = size();
+			size_type _cs = size();
 			size_type _ccp = capacity();
-			if (_csz != 0){
-				if (_csz >= _ccp)
-					Mreallocat(_csz * 2);
+			if (_cs == 0 || _pos == _cs)
+				push_back(val);
+			else if (_cs != 0){
+				if (_cs >= _ccp)
+					reserve(_cap * 2);
 				for (size_type i = size(); i > _pos; i--)
 					_ptr[i] = _ptr[i - 1];
 				_ptr[_pos] = val;
 				_size++;
 			}
-			else
-				push_back(val);
 			return iterator(&_ptr[_pos]);
 		}
 		void insert (iterator position, size_type n, const value_type& val){	
@@ -683,74 +695,3 @@ namespace ft
 }
 
 #endif /* VECTOR_HPP */
-
-	// template<class T>
-	// struct iterator_traits<const T*>
-	// {
-	// 	typedef ptrdiff_t difference_type;
-	// 	typedef T value_type;
-	// 	typedef T* pointer;
-	// 	typedef T& reference;
-	// 	typedef std::random_access_iterator_tag iterator_category;
-	// };
-
-	// template <typename Vector>
-	// class vectorIterator{
-	// 	public:
-    // 		typedef typename Vector::pointer	                               iterator_type;
-	// 	    typedef typename iterator_traits<iterator_type>::iterator_category iterator_category;
-	// 		typedef typename iterator_traits<iterator_type>::value_type        value_type;
-	// 		typedef typename iterator_traits<iterator_type>::difference_type   difference_type;
-	// 		typedef typename iterator_traits<iterator_type>::pointer           pointer;
-	// 		typedef typename iterator_traits<iterator_type>::reference         reference;
-	// 		// typedef ptrdiff_t difference_type;
-	// 		// typedef	typename Vector::value_type value_type;
-	// 		// typedef value_type*		pointer;
-	// 		// typedef value_type&		referance;
-	// 	public:
-	// 		vectorIterator(pointer ptr):_ptr(ptr){
-	// 		};
-
-	// 		// vectorIterator(vectorIterator const & rhs){
-	// 		// 	*this = rhs;
-	// 		// };
-			
-	// 		// vectorIterator &operator=(vectorIterator const &rhs){
-	// 		// 	this->_ptr = rhs._ptr;
-	// 		// 	return *this;
-	// 		// }
-			
-	// 		value_type &operator*(){
-	// 			return *_ptr;
-	// 		}
-	// 		vectorIterator operator++(int){
-	// 			vectorIterator tmp = *this;
-	// 			++_ptr;
-	// 			return tmp;
-	// 		}
-	// 		vectorIterator	operator++(){
-	// 			++_ptr;
-	// 			return *this;
-	// 		}
-	// 		vectorIterator	operator--(int){
-	// 			vectorIterator tmp = *this;
-	// 			--_ptr;
-	// 			return tmp;
-	// 		}
-	// 		vectorIterator	operator--(){
-	// 			--_ptr;
-	// 			return *this;
-	// 		}
-	// 		pointer			operator->(){
-	// 			return _ptr;
-	// 		}
-	// 		bool			operator==(vectorIterator const &rhs){
-	// 			return (this->_ptr == rhs._ptr);
-	// 		}
-	// 		bool			operator!=(vectorIterator const &rhs){
-	// 			return (this->_ptr != rhs._ptr);
-	// 		}
-	// 		~vectorIterator(){};
-	// 	private:
-	// 		pointer _ptr;
-	// };
