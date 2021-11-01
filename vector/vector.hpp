@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/27 14:22:17 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/10/30 17:32:12 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,6 +295,12 @@ namespace ft
 		private:
 			iterator_type _ptr;
 	};
+			template <class Iterator>
+				typename vectorIterator<Iterator>::difference_type operator- (
+					const vectorIterator<Iterator>& lhs,
+					const vectorIterator<Iterator>& rhs){
+						return (rhs.base() - lhs.base()); 
+					};
 			template <typename iter>
 			vectorIterator<iter>	operator+(typename vectorIterator<iter>::difference_type n, vectorIterator<iter> &out){
 				out += n;
@@ -433,7 +439,7 @@ namespace ft
 						_allocator.destroy(_ptr + i);
 					_size = n;
 					}
-				else if(n > _size) // todo : fix cap
+				else if(n > _size)
 				{
 					if (n > _cap)
 						reserve((n > _cap * 2)? n : _size * 2);
@@ -584,17 +590,25 @@ namespace ft
 			}
 			return iterator(&_ptr[_pos]);
 		}
-		void insert (iterator position, size_type n, const value_type& val){	
-			int i = 0;
-			while (i < n){
-				insert(position, val);
-				i++;
+		void insert (iterator position, size_type n, const value_type& val){	// todo
+			size_type _dis = distance(begin(), position);
+			size_type _cs = size();
+			size_type _ccp = capacity();
+			if (_cs >= _ccp)
+				reserve((n + _cs > _cap * 2)? n + _cs : _size * 2);
+			_size += n;
+			for (size_type i = size() - 1; i > _dis ;i--)
+			{
+				_ptr[i] = _ptr[i - n];
+			}
+			for (size_type i = n; i > 0; i--){
+				_ptr[_dis + i - 1] = val;
 			}
 		};
 		
 		template <class InputIterator>
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last){
-				size_type _dis = distance(first, last); //todo
+				size_type _dis = distance(first, last);
 				typename InputIterator::pointer _tmp = _allocator.allocate(_dis);
 				int cp = 0;
 				for (InputIterator i = first; i != last; i++)

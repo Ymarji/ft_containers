@@ -1,6 +1,10 @@
 #include <vector>
 #include <exception>
+#include <stack>
 #include "./vector.hpp"
+#include "./map.hpp"
+#include <map>
+
 // #include <iostream>
 // #include <algorithm>
 // #include <memory>
@@ -41,25 +45,25 @@
 	
 // }
 int main(){
-	typedef std::vector<int>::iterator Iterator;
+	typedef ft::vector<int>::iterator Iterator;
 
-	std::vector<int> stv;
-	stv.push_back(1);
-	stv.push_back(2);
-	stv.push_back(3);
-	stv.push_back(4);
-	stv.push_back(5);
-	stv.push_back(6);
-	stv.push_back(7);
-	stv.push_back(8);
-	put("int_arr Size : " << stv.size() << " Cap : "<< stv.capacity());
-	stv.resize(19,55);
+	ft::vector<int> stv;
+	// stv.push_back(1);
+	// stv.push_back(2);
+	// stv.push_back(3);
+	// stv.push_back(4);
+	// stv.push_back(5);
+	// stv.push_back(6);
+	// stv.push_back(7);
+	// stv.push_back(8);
+	// put("int_arr Size : " << stv.size() << " Cap : "<< stv.capacity());
+	// // stv.resize(19,55);
 	// stv.reserve(91);
-	// stv.insert(stv.end() - 1, 9);
-	// stv.assign(16, 10);
-		for(Iterator it = stv.begin(); it != stv.end(); it++)
-			put(*it);
-	put("int_arr Size : " << stv.size() << " Cap : "<< stv.capacity());
+	// stv.insert(stv.begin(), 2,9999);
+	// // stv.assign(16, 10);
+	// 	for(Iterator it = stv.begin(); it != stv.end(); it++)
+	// 		put(*it);
+	// put("int_arr Size : " << stv.size() << " Cap : "<< stv.capacity());
 
 
 	// ft::vector<int> int_arr(5, 10);
@@ -122,5 +126,32 @@ int main(){
 	// 	for(int i = 0; i < int_arr.size(); i++){
 	// 		put(int_arr.at(i));
 	// 	}
+	{
+		typedef ft::__tree<ft::pair<int, int>, std::less<int>, std::allocator<ft::pair<int, int> > > tree;
+		typedef ft::_node<ft::pair<int, int> > node;
+		ft::pair<int, int> p;
+		p.first = 5;
+		p.second = 45;
+		ft::pair<int, int> p5;
+		p5.first = 7;
+		p5.second = 47;
+		ft::pair<int, int> p1;
+		p1.first = 3;
+		p1.second = 43;
+		ft::pair<int, int> p2;
+		p2.first = 4;
+		p2.second = 44;
+
+		tree Tr;
+		node tmp;
+		Tr.AddinTree(Tr.MakeNode(p));
+		Tr.AddinTree(Tr.MakeNode(p1));
+		Tr.AddinTree(Tr.MakeNode(p2));
+		Tr.AddinTree(Tr.MakeNode(p5));
+		std::cout << Tr.treeMin()->Value.first << " " << Tr.treeMin()->Value.second << std::endl;
+		std::cout << Tr.treeMax()->Value.first << " " << Tr.treeMax()->Value.second << std::endl;
+		std::cout << Tr.size(Tr._tree_root) << std::endl;
+		std::cout << Tr.search(5)->Value << std::endl;
+	}
     return 0;
 }
