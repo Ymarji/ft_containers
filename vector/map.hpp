@@ -9,11 +9,19 @@ namespace ft{
 	struct _node{
 		public:
 			_Tp		Value;
+			_node<_Tp> *parent;
 			_node<_Tp> *left;
 			_node<_Tp> *right;
-			// bool operator<(const _node &rhs){
-			// 	return (this->Value.first < rhs.Value.first; );
-			// }
+
+			_node	&operator=(const _node	&rhs){
+				this->Value = rhs.Value;
+				this->parent = rhs.parent;
+				this->left = rhs.left;
+				this->right = rhs.right;
+			}
+			bool operator<(const _node &rhs){
+				return (this->Value.first < rhs.Value.first);
+			}
 	};
 
 	template <class Tp, class Compare, class Allocator>
@@ -23,8 +31,8 @@ namespace ft{
 			typedef typename Tp::first_type					key_value;
 			typedef Compare									key_compare;
 			typedef Allocator								allocator_type;
-			typedef	_node<value_type>								_node;
-			typedef		size_t											size_type;
+			typedef	_node<value_type>						_node;
+			typedef	size_t									size_type;
 
 			typedef typename allocator_type::template rebind<_node>::other		_node_allocator; //
 			typedef	__tree<value_type, key_compare, allocator_type>				_tree;
@@ -38,23 +46,26 @@ namespace ft{
 			__tree(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _tree_root(nullptr), _size(0) {};
 			__tree(value_type _t, const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type()):_tree_root(_t), _CompObject(comp), _allocator(alloc), _size(0) {};
-			_node	*treeMin(){
-				_node *StartingNode = _tree_root;
+			_node	*treeMin(_node	*_start){
+				_node *StartingNode = _start;
 				while (StartingNode->left != nullptr)
 					StartingNode = StartingNode->left;
 				return StartingNode;
 			}
-			_node	*treeMax(){
-				_node *StartingNode = _tree_root;
+			_node	*treeMax(_node	*_start){
+				_node *StartingNode = _start;
 				while (StartingNode->right != nullptr)
 					StartingNode = StartingNode->right;
 				return StartingNode;
 			}
+			_node	*getRoot(){
+				return	_tree_root;
+			}
 			_node	*MakeNode(value_type _t){
-				// _node *tmp = _allocator.allocate(sizeof(_node)); // todo
 				_node *tmp = _node_allocator(_allocator).allocate(1);
 
 				tmp->Value = _t;
+				tmp->parent = nullptr;
 				tmp->left = nullptr;
 				tmp->right = nullptr;
 				return	tmp;
@@ -62,7 +73,8 @@ namespace ft{
 			void	AddinTree(_node	*newNode){
 				_node	*TreeDriver = _tree_root;
 				_node	*parent = nullptr;
-					_size++;
+
+				_size++;
 				if	(_tree_root == nullptr)
 					_tree_root = newNode;
 				else
@@ -82,29 +94,128 @@ namespace ft{
 							TreeDriver = TreeDriver->right;
 					}
 					if (_CompObject(newNode->Value.first, parent->Value.first))
-					{
 						parent->left = newNode;
-					}
 					else
 						parent->right = newNode;
+					newNode->parent = parent;
 				}
 			}
-			size_type size(_node	*startingNode){
+			void	ordred_traversal(_node	*root){
+				_node	*Driver = root;
+				if (Driver != nullptr){
+					ordred_traversal(Driver->left);
+					put(Driver->Value);
+					ordred_traversal(Driver->right);
+				}
+			};
+			size_type size(){
 				return _size;
 			}
-			_node	*search(const key_value& key_value){
-				_node	*Driver = _tree_root;
+		private:
+			_node	*searchFrom(_node *start, const key_value& key_value){
+				_node	*Driver = start;
 				while (Driver != nullptr)
 				{
 					if (Driver->Value.first == key_value)
 						return Driver;
 					if (_CompObject(key_value, Driver->Value.first))
-							Driver = Driver->left;
-						else
-							Driver = Driver->right;
+						Driver = Driver->left;
+					else
+						Driver = Driver->right;
 				}
-					return nullptr;
+				return nullptr;
 			}
+			_node	*_deletehelper(_node	*start, const key_value& key){
+				if (start == nullptr)
+					return nullptr;
+				else if (key < start->Value.first)
+					start->left = _deletehelper(start->left, key);
+				else if (key > start->Value.first)
+					start->right = _deletehelper(start->right, key);
+				else{
+					//case 1
+					if (start->left == nullptr && start->right == nullptr){
+						_node_allocator(_allocator).destroy(start);	
+						_node_allocator(_allocator).deallocate(start, 1);
+						start = nullptr;
+					}//case 2
+					else if (start->left == nullptr){
+						_node	*temp = start;
+						start = start->right;
+						_node_allocator(_allocator).destroy(temp);	
+						_node_allocator(_allocator).deallocate(temp, 1);
+					}
+					else if (start->right == nullptr){
+						_node	*temp = start;
+						start = start->left;
+						_node_allocator(_allocator).destroy(temp);	
+						_node_allocator(_allocator).deallocate(temp, 1);
+					}//case3
+					else{
+						_node	*temp = treeMin(start->right);
+						start->Value = temp->Value;
+						start->right = _deletehelper(temp, temp->Value.first);
+					}
+				}
+				return start;
+			}
+		public:
+			_node	*search(const key_value& key_value){
+				return searchFrom(_tree_root, key_value);
+			}
+			void	_delete(const key_value& key)
+			{
+				_node *tmp = _deletehelper(_tree_root, key);
+				if (tmp != nullptr)
+					_size--;
+			}
+			// void	_delete(_node *start, const key_value& sxkey){
+			// 	_node	*toDeNood;
+			// 	// if ((toDeNood = search(key)))
+			// 	if ((toDeNood = searchFrom(start, key)))
+			// 	{
+			// 		_size--;
+			// 		if (toDeNood->left == nullptr && toDeNood->right == nullptr)
+			// 		{
+			// 			if (toDeNood < toDeNood->parent)
+			// 				toDeNood->parent->left = nullptr;
+			// 			else
+			// 				toDeNood->parent->right = nullptr;
+			// 			_node_allocator(_allocator).destroy(toDeNood);	
+			// 			_node_allocator(_allocator).deallocate(toDeNood, 1);
+			// 		}
+			// 		else if (toDeNood->left == nullptr || toDeNood->right == nullptr){
+			// 			if (toDeNood < toDeNood->parent){
+			// 				if (toDeNood->left == nullptr){
+			// 					toDeNood->right->parent = toDeNood->parent;
+			// 					toDeNood->parent->left = toDeNood->right;
+			// 				}else{
+			// 					toDeNood->left->parent = toDeNood->parent;
+			// 					toDeNood->parent->left = toDeNood->left;
+			// 				}
+			// 			}
+			// 			else{
+			// 				if (toDeNood->left == nullptr){
+			// 					toDeNood->right->parent = toDeNood->parent;
+			// 					toDeNood->parent->right = toDeNood->right;
+			// 				}else{
+			// 					toDeNood->left->parent = toDeNood->parent;
+			// 					toDeNood->parent->right = toDeNood->left;
+			// 				}
+			// 			}
+			// 			_size--;
+			// 			_node_allocator(_allocator).destroy(toDeNood);	
+			// 			_node_allocator(_allocator).deallocate(toDeNood, 1);
+			// 		}
+			// 		else{
+			// 			_node	*tmp = treeMin(toDeNood->right);
+			// 			toDeNood->Value = tmp->Value;
+			// 			_delete(tmp, tmp->Value.first);
+			// 			// _node_allocator(_allocator).destroy(tmp);	
+			// 			// _node_allocator(_allocator).deallocate(tmp, 1);
+			// 		}
+			// 	}
+			// }
 			~__tree() {};
 
 	};

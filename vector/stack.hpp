@@ -14,7 +14,7 @@ namespace ft{
 				stack():c(){
 				};
 				explicit stack (const container_type& ctnr = container_type()):
-				c(ctnr){
+					c(ctnr){
 				};
 				bool empty() const{
 					return c.empty();

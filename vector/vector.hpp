@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/10/30 17:32:12 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/11/03 10:56:12 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 // #include <stack>
 #include <iterator>
 #include <vector>
+#include <stack>
 #include <algorithm>
 #include <memory>
 #define put(x) std::cout << x << std::endl
