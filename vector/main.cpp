@@ -4,7 +4,9 @@
 #include "./vector.hpp"
 #include "./map.hpp"
 #include <map>
-
+#include <utility>
+#define	BST_S 11 
+#define	BST(x , y) p12.first = 20; p12.second = 412;
 // #include <iostream>
 // #include <algorithm>
 // #include <memory>
@@ -45,9 +47,8 @@
 	
 // }
 int main(){
-	typedef ft::vector<int>::iterator Iterator;
-
-	ft::vector<int> stv;
+	// typedef ft::vector<int>::iterator Iterator;
+	// ft::vector<int> stv;
 	// stv.push_back(1);
 	// stv.push_back(2);
 	// stv.push_back(3);
@@ -127,51 +128,23 @@ int main(){
 	// 		put(int_arr.at(i));
 	// 	}
 	{
-		typedef ft::__tree<ft::pair<int, int>, std::less<int>, std::allocator<ft::pair<int, int> > > tree;
-		typedef ft::_node<ft::pair<int, int> > node;
-			ft::pair<int, int> p;
-		p.first = 9;
-		p.second = 45;
-			ft::pair<int, int> p1;
-		p1.first = 4;
-		p1.second = 43;
-			ft::pair<int, int> p2;
-		p2.first = 2;
-		p2.second = 44;
-			ft::pair<int, int> p3;
-		p3.first = 1;
-		p3.second = 43;
-			ft::pair<int, int> p4;
-		p4.first = 3;
-		p4.second = 44;
-			ft::pair<int, int> p5;
-		p5.first = 15;
-		p5.second = 45;
-			ft::pair<int, int> p6;
-		p6.first = 13;
-		p6.second = 46;
-			ft::pair<int, int> p7;
-		p7.first = 12;
-		p7.second = 47;
-			ft::pair<int, int> p8;
-		p8.first = 14;
-		p8.second = 48;
-			ft::pair<int, int> p9;
-		p9.first = 16;
-		p9.second = 49;
-			ft::pair<int, int> p10;
-		p10.first = 19;
-		p10.second = 410;
-			ft::pair<int, int> p11;
-		p11.first = 18;
-		p11.second = 411;
-			ft::pair<int, int> p12;
-		p12.first = 20;
-		p12.second = 412;
-
-		tree Tr;
-		node tmp;
-		Tr.AddinTree(Tr.MakeNode(p));
+		typedef ft::__tree<ft::pair<const int, int>, std::less<int>, std::allocator<ft::pair<int, int> > > tree;
+		typedef ft::__node<ft::pair<const int, int> > node;
+			ft::pair<const int, int> p1(9, 45);
+			ft::pair<const int, int> p2(8, 45);
+			ft::pair<const int, int> p3(2, 45);
+			ft::pair<const int, int> p4(5, 45);
+			ft::pair<const int, int> p5(1, 45);
+			ft::pair<const int, int> p6(15, 45);
+			ft::pair<const int, int> p7(13, 45);
+			ft::pair<const int, int> p8(16, 45);
+			ft::pair<const int, int> p9(19, 45);
+			ft::pair<const int, int> p10(20, 45);
+			ft::pair<const int, int> p11(18, 45);
+			ft::pair<const int, int> p12(14, 45);
+			ft::pair<const int, int> p13(12, 45);
+		ft::map<int, int>::tree Tr;
+		// INSERT IN TREE;
 		Tr.AddinTree(Tr.MakeNode(p1));
 		Tr.AddinTree(Tr.MakeNode(p2));
 		Tr.AddinTree(Tr.MakeNode(p3));
@@ -184,17 +157,42 @@ int main(){
 		Tr.AddinTree(Tr.MakeNode(p10));
 		Tr.AddinTree(Tr.MakeNode(p11));
 		Tr.AddinTree(Tr.MakeNode(p12));
-		std::cout << Tr.treeMin(Tr.getRoot())->Value << std::endl;
-		std::cout << Tr.treeMax(Tr.getRoot())->Value << std::endl;
-		std::cout << Tr.size() << std::endl;
-		std::cout << Tr.search(1)->Value << std::endl;
-		// Tr._delete(4);
-		// std::cout << Tr.size() << std::endl;
+		Tr.AddinTree(Tr.MakeNode(p13));
+		// OPERATION ON TREE
+		// std::cout << Tr.treeMin(Tr.getRoot())->Value << std::endl;
+		// std::cout << Tr.treeMax(Tr.getRoot())->Value << std::endl;
 		// std::cout << Tr.search(1)->Value << std::endl;
+		// std::cout << Tr.size() << std::endl;
+		// Tr.ordred_traversal(Tr.getRoot());
+		// put("========");
+		// Tr._delete(4);
+		// Tr._delete(9);
+		// Tr._delete(1);
+		// Tr._delete(19);
+		// std::cout << Tr.size() << std::endl;
+		// // IN-ORDER TREE WALK
 		Tr.ordred_traversal(Tr.getRoot());
-		// std::cout << Tr.search(4)->Value << std::endl;
-		// std::cout << Tr.search(5)->Value << std::endl;
-		// std::cout << Tr.search() << std::endl;
+		put("========");
+		// ft::map<int, int>::_iterator it(Tr.treeMin(Tr.getRoot()));
+		// for (size_t i = 0; i < 13; i++)
+		// {
+		// 	std::cout  << i << "  "<< (*it++) << std::endl;
+		// }
+		// std::cout << (*it++) << std::endl;
+		// // std::cout << (*it--) << std::endl;
+		// std::cout << (*it) << std::endl;
+		// std::cout << (*--it) << std::endl;
+
+		ft::map<int, int>::const_iterator it(Tr.treeMin(Tr.getRoot()));
+		for (size_t i = 0; i < 13; i++)
+		{
+			std::cout << (*it++) << std::endl;
+		}
+		// std::cout << (*it++) << std::endl;
+		// // std::cout << (*it--) << std::endl;
+		// std::cout << (*it) << std::endl;
+		// std::cout << (*--it) << std::endl;
+
 	}
     return 0;
 }
