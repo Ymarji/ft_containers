@@ -14,10 +14,16 @@ namespace ft{
 		template<class U, class V>
 			pair (const pair<U,V>& pr):first(pr.first), second(pr.second) {};
 		pair& operator= (const pair& pr){
-			this->first = pr.first;
-			this->second = pr.second;
+			first = pr.first;
+			second = pr.second;
 			return *this;
 		};
+		bool	operator== (const pair& pr){
+			return (first == second);
+		}
+		bool	operator!= (const pair& pr){
+			return !(first == second);
+		}
 	};
 	template <class T1, class T2>
 	std::ostream	&operator<<(std::ostream &os, ft::pair<T1, T2> pair)
