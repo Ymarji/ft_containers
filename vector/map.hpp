@@ -2,78 +2,128 @@
 #define MAP_HPP
 
 #include "pair.hpp"
+#include "map_util.hpp"
 #include <memory>
 
 namespace ft{
 	template <class _Tp>
-	struct _node{
+	struct __node{
+		public:
+			typedef	_Tp		value_type;
 		public:
 			_Tp		Value;
-			_node<_Tp> *parent;
-			_node<_Tp> *left;
-			_node<_Tp> *right;
-
-			_node	&operator=(const _node	&rhs){
+			__node<_Tp> *parent;
+			__node<_Tp> *left;
+			__node<_Tp> *right;
+			__node(const value_type &p):Value(p){};
+			__node	&operator=(const __node	&rhs){
 				this->Value = rhs.Value;
 				this->parent = rhs.parent;
 				this->left = rhs.left;
 				this->right = rhs.right;
 			}
-			bool operator<(const _node &rhs){
+			bool operator<(const __node &rhs){
 				return (this->Value.first < rhs.Value.first);
 			}
 	};
 
-	template <class Tp, class Compare, class Allocator>
+	template <class _Tp, class _nodePtr>
+	class	__tree_iter{
+		public:
+			typedef	_Tp				value_type;
+			typedef	_Tp&			reference;
+			typedef	_Tp*			pointer;
+		private:
+			_nodePtr	_node;
+		public:
+		__tree_iter(_nodePtr n):_node(n){};
+		__tree_iter	operator++(){
+			_nodePtr tmp = ft::tree_next_iter(_node);
+			if (tmp != nullptr)
+				_node = tmp;
+			return *this;
+		};
+		__tree_iter	operator++(int){
+			__tree_iter	tmp = *this;
+			++(*this);
+			return tmp;
+		};
+		__tree_iter	operator--(){
+			_nodePtr tmp = ft::tree_prev_iter(_node);
+			if (tmp != nullptr)
+				_node = tmp;
+			return *this;
+		};
+		__tree_iter	operator--(int){
+			__tree_iter	tmp = *this;
+			--(*this);
+			return tmp;
+		};
+		reference	operator*(){
+			return (_node->Value);
+		};
+		
+		pointer	operator->(){
+			return	&(_node->Value);
+		};
+		bool	operator==(__tree_iter const &rhs){
+			return	( this->_node == rhs._node);
+		};
+		bool	operator!=(__tree_iter const &rhs){
+			return	!(this->_node == rhs._node);
+		};
+	};
+
+	template <class Tp, class Compare = std::less<typename Tp::first_type> , class Allocator = std::allocator<Tp> >
 	class __tree{
 		public:
-			typedef Tp										value_type;
-			typedef typename Tp::first_type					key_value;
-			typedef Compare									key_compare;
-			typedef Allocator								allocator_type;
-			typedef	_node<value_type>						_node;
-			typedef	size_t									size_type;
+			typedef Tp															value_type;
+			typedef typename Tp::first_type										key_value;
+			typedef Compare														key_compare;
+			typedef Allocator													allocator_type;
+			typedef	size_t														size_type;
 
-			typedef typename allocator_type::template rebind<_node>::other		_node_allocator; //
+			typedef	__node<value_type>											node;
+			typedef typename allocator_type::template rebind<node>::other		node_allocator; //
 			typedef	__tree<value_type, key_compare, allocator_type>				_tree;
+
+			typedef	node*														nodePtr;
 		private:
 			size_type			_size;
 			const key_compare	&_CompObject;
 			const Allocator		&_allocator;
-		public:
-			_node			*_tree_root;
+			node			*_tree_root;
 		public:
 			__tree(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _tree_root(nullptr), _size(0) {};
 			__tree(value_type _t, const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type()):_tree_root(_t), _CompObject(comp), _allocator(alloc), _size(0) {};
-			_node	*treeMin(_node	*_start){
-				_node *StartingNode = _start;
+			nodePtr	Base(){return _tree_root; }
+			nodePtr	treeMin(nodePtr	_start){
+				node *StartingNode = _start;
 				while (StartingNode->left != nullptr)
 					StartingNode = StartingNode->left;
 				return StartingNode;
 			}
-			_node	*treeMax(_node	*_start){
-				_node *StartingNode = _start;
+			nodePtr	treeMax(nodePtr	_start){
+				node *StartingNode = _start;
 				while (StartingNode->right != nullptr)
 					StartingNode = StartingNode->right;
 				return StartingNode;
 			}
-			_node	*getRoot(){
+			nodePtr	getRoot(){
 				return	_tree_root;
 			}
-			_node	*MakeNode(value_type _t){
-				_node *tmp = _node_allocator(_allocator).allocate(1);
-
-				tmp->Value = _t;
+			nodePtr	MakeNode(value_type _t){
+				node *tmp = node_allocator(_allocator).allocate(1);
+				node_allocator(_allocator).construct(tmp, _t);
 				tmp->parent = nullptr;
 				tmp->left = nullptr;
 				tmp->right = nullptr;
 				return	tmp;
 			};
-			void	AddinTree(_node	*newNode){
-				_node	*TreeDriver = _tree_root;
-				_node	*parent = nullptr;
-
+			void	AddinTree(nodePtr	newNode){
+				nodePtr	TreeDriver = _tree_root;
+				nodePtr	parent = nullptr;
 				_size++;
 				if	(_tree_root == nullptr)
 					_tree_root = newNode;
@@ -83,8 +133,9 @@ namespace ft{
 					{
 						parent = TreeDriver;
 						if (newNode->Value.first == TreeDriver->Value.first){
+							// return ;
 							TreeDriver->Value.second = newNode->Value.second;
-							_node_allocator(_allocator).deallocate(newNode ,1);
+							node_allocator(_allocator).deallocate(newNode ,1);
 							_size--;
 							break ;
 						}
@@ -100,8 +151,8 @@ namespace ft{
 					newNode->parent = parent;
 				}
 			}
-			void	ordred_traversal(_node	*root){
-				_node	*Driver = root;
+			void	ordred_traversal(nodePtr	root){
+				nodePtr	Driver = root;
 				if (Driver != nullptr){
 					ordred_traversal(Driver->left);
 					put(Driver->Value);
@@ -112,8 +163,8 @@ namespace ft{
 				return _size;
 			}
 		private:
-			_node	*searchFrom(_node *start, const key_value& key_value){
-				_node	*Driver = start;
+			nodePtr	searchFrom(node *start, const key_value& key_value){
+				nodePtr	Driver = start;
 				while (Driver != nullptr)
 				{
 					if (Driver->Value.first == key_value)
@@ -125,7 +176,7 @@ namespace ft{
 				}
 				return nullptr;
 			}
-			_node	*_deletehelper(_node	*start, const key_value& key){
+			nodePtr	_deletehelper(nodePtr	start, const key_value& key){
 				if (start == nullptr)
 					return nullptr;
 				else if (key < start->Value.first)
@@ -135,89 +186,57 @@ namespace ft{
 				else{
 					//case 1
 					if (start->left == nullptr && start->right == nullptr){
-						_node_allocator(_allocator).destroy(start);	
-						_node_allocator(_allocator).deallocate(start, 1);
+						node_allocator(_allocator).destroy(start);	
+						node_allocator(_allocator).deallocate(start, 1);
 						start = nullptr;
 					}//case 2
 					else if (start->left == nullptr){
-						_node	*temp = start;
+						nodePtr	temp = start;
 						start = start->right;
-						_node_allocator(_allocator).destroy(temp);	
-						_node_allocator(_allocator).deallocate(temp, 1);
+						start->parent = temp->parent;
+						node_allocator(_allocator).destroy(temp);	
+						node_allocator(_allocator).deallocate(temp, 1);
 					}
 					else if (start->right == nullptr){
-						_node	*temp = start;
+						nodePtr	temp = start;
 						start = start->left;
-						_node_allocator(_allocator).destroy(temp);	
-						_node_allocator(_allocator).deallocate(temp, 1);
+						start->parent = temp->parent;
+						node_allocator(_allocator).destroy(temp);	
+						node_allocator(_allocator).deallocate(temp, 1);
 					}//case3
 					else{
-						_node	*temp = treeMin(start->right);
-						start->Value = temp->Value;
-						start->right = _deletehelper(temp, temp->Value.first);
+						nodePtr	temp = treeMin(start->right);
+						// start->Value = temp->Value;
+						node_allocator(_allocator).construct(start, temp->Value);
+						start->right = _deletehelper(start->right , temp->Value.first);
 					}
 				}
 				return start;
 			}
 		public:
-			_node	*search(const key_value& key_value){
+			nodePtr	search(const key_value& key_value){
 				return searchFrom(_tree_root, key_value);
 			}
 			void	_delete(const key_value& key)
 			{
-				_node *tmp = _deletehelper(_tree_root, key);
-				if (tmp != nullptr)
+				_tree_root = _deletehelper(_tree_root, key);
+				if (_tree_root != nullptr)
 					_size--;
 			}
-			// void	_delete(_node *start, const key_value& sxkey){
-			// 	_node	*toDeNood;
-			// 	// if ((toDeNood = search(key)))
-			// 	if ((toDeNood = searchFrom(start, key)))
-			// 	{
-			// 		_size--;
-			// 		if (toDeNood->left == nullptr && toDeNood->right == nullptr)
-			// 		{
-			// 			if (toDeNood < toDeNood->parent)
-			// 				toDeNood->parent->left = nullptr;
-			// 			else
-			// 				toDeNood->parent->right = nullptr;
-			// 			_node_allocator(_allocator).destroy(toDeNood);	
-			// 			_node_allocator(_allocator).deallocate(toDeNood, 1);
-			// 		}
-			// 		else if (toDeNood->left == nullptr || toDeNood->right == nullptr){
-			// 			if (toDeNood < toDeNood->parent){
-			// 				if (toDeNood->left == nullptr){
-			// 					toDeNood->right->parent = toDeNood->parent;
-			// 					toDeNood->parent->left = toDeNood->right;
-			// 				}else{
-			// 					toDeNood->left->parent = toDeNood->parent;
-			// 					toDeNood->parent->left = toDeNood->left;
-			// 				}
-			// 			}
-			// 			else{
-			// 				if (toDeNood->left == nullptr){
-			// 					toDeNood->right->parent = toDeNood->parent;
-			// 					toDeNood->parent->right = toDeNood->right;
-			// 				}else{
-			// 					toDeNood->left->parent = toDeNood->parent;
-			// 					toDeNood->parent->right = toDeNood->left;
-			// 				}
-			// 			}
-			// 			_size--;
-			// 			_node_allocator(_allocator).destroy(toDeNood);	
-			// 			_node_allocator(_allocator).deallocate(toDeNood, 1);
-			// 		}
-			// 		else{
-			// 			_node	*tmp = treeMin(toDeNood->right);
-			// 			toDeNood->Value = tmp->Value;
-			// 			_delete(tmp, tmp->Value.first);
-			// 			// _node_allocator(_allocator).destroy(tmp);	
-			// 			// _node_allocator(_allocator).deallocate(tmp, 1);
-			// 		}
-			// 	}
-			// }
+			nodePtr	treeSuccessor()//node *x)
+			{
+				nodePtr	x = _tree_root;
+				if (x->right != nullptr)
+					return treeMin(x->right);
+				nodePtr	tmp = x->parent;
+				while (tmp != nullptr && x == tmp->right)
+				{
+					x = tmp;
+					tmp = tmp->parent;
+				}
+				return tmp;
+			};
 			~__tree() {};
-
 	};
 	template < class Key,												// map::key_type
 			class T,													// map::mapped_type
@@ -250,9 +269,13 @@ namespace ft{
 					};
 			};
 		public:
-			typedef	_node<value_type>									_node;
-			typedef typename allocator_type::template rebind<_node>::other		_node_allocator; //
-			typedef	__tree<value_type, value_compare, allocator_type>		_tree;
+			typedef	__node<value_type>									node;
+			typedef	node*									nodePtr;
+			typedef typename allocator_type::template rebind<node>::other		node_allocator; //
+			typedef	const value_type											const_value_type;
+			typedef	__tree<value_type, key_compare, allocator_type>			tree;
+			typedef	__tree_iter<value_type, nodePtr>							iterator;
+			typedef	__tree_iter<const_value_type, nodePtr>							const_iterator;
 		
 			explicit map (const key_compare& comp = key_compare(),
 								const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _bst(nullptr) {};
@@ -260,10 +283,14 @@ namespace ft{
 				map (InputIterator first, InputIterator last,
 						const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _bst() {};
+			
+			iterator begin(){
+				return iterator(_bst.treeMin());
+			}
 		private:
 			key_compare		_CompObject;
 			allocator_type	_allocator;
-			_tree			_bst;
+			tree			_bst;
 	};
-}
+};
 #endif /* MAP_HPP */
