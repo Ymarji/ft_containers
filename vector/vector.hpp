@@ -6,7 +6,7 @@
 /*   By: ymarji <ymarji@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/27 09:49:50 by ymarji            #+#    #+#             */
-/*   Updated: 2021/11/03 10:56:12 by ymarji           ###   ########.fr       */
+/*   Updated: 2021/11/05 11:08:22 by ymarji           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,8 +363,6 @@ namespace ft
 				for (size_type i = 0 ; i < _cap; i++)
 					_ptr[i] = val;
 			};
-			// typename ft::enable_if<std::is_class<InputIterator>::value>::type
-			// typename std::enable_if<std::__is_random_access_iterator<InputIterator>::value>::type
 			template <class	InputIterator>
 			vector<T, Alloc>(InputIterator first, InputIterator last, const allocator_type &alloc = allocator_type(),
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = nullptr)
