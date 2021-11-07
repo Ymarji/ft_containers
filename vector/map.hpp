@@ -27,16 +27,77 @@ namespace ft{
 			}
 	};
 
+	template <class _iter>
+	class	__tree_reverse_iter : public ft::iterator< ft::bidirectional_iterator_tag,
+									typename iterator_traits<_iter>::value_type,
+									typename iterator_traits<_iter>::difference_type,
+									typename iterator_traits<_iter>::pointer,
+									typename iterator_traits<_iter>::reference>
+	{
+		public:
+			//REVIEW:
+			// typedef	_iter					iterator;
+			// typedef	iterator&				reference;
+			// typedef	iterator*				pointer;
+			typedef _iter													iterator;
+			typedef typename iterator_traits<iterator>::iterator_category	iterator_category;
+			typedef typename iterator_traits<iterator>::value_type       	value_type;
+			typedef typename iterator_traits<iterator>::difference_type  	difference_type;
+			typedef typename iterator_traits<iterator>::pointer          	pointer;
+			typedef typename iterator_traits<iterator>::reference        	reference;
+		private:
+			iterator	_iterator;
+		public:
+		__tree_reverse_iter(iterator n):_iterator(n){};
+		iterator	base() const{
+			return _iterator;
+		};
+		__tree_reverse_iter	operator++(){
+			--_iterator;
+			return *this;
+		};
+		__tree_reverse_iter	operator++(int){
+			__tree_reverse_iter	tmp = *this;
+			++(*this);
+			return tmp;
+		};
+		__tree_reverse_iter	operator--(){
+			++_iterator;
+			return *this;
+		};
+		__tree_reverse_iter	operator--(int){
+			__tree_reverse_iter	tmp = *this;
+			--(*this);
+			return tmp;
+		};
+		reference	operator*(){
+			return *(--base());
+		};
+		
+		pointer	operator->(){
+			return	&(operator*());
+		};
+		bool	operator==(__tree_reverse_iter const &rhs){
+			return	(this->base() == this->base());
+		};
+		bool	operator!=(__tree_reverse_iter const &rhs){
+			return	!(this->base() == this->base());
+		};
+	};
+
 	template <class _Tp, class _nodePtr>
 	class	__tree_iter{
 		public:
-			typedef	_Tp				value_type;
-			typedef	_Tp&			reference;
-			typedef	_Tp*			pointer;
+			typedef	_Tp								value_type;
+			typedef	_Tp&							reference;
+			typedef	_Tp*							pointer;
+			typedef ptrdiff_t						difference_type;
+			typedef	ft::bidirectional_iterator_tag	iterator_category;
 		private:
 			_nodePtr	_node;
 		public:
 		__tree_iter(_nodePtr n):_node(n){};
+		
 		__tree_iter	operator++(){
 			_nodePtr tmp = ft::tree_next_iter(_node);
 			if (tmp != nullptr)
@@ -98,17 +159,11 @@ namespace ft{
 			__tree(value_type _t, const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type()):_tree_root(_t), _CompObject(comp), _allocator(alloc), _size(0) {};
 			nodePtr	Base(){return _tree_root; }
-			nodePtr	treeMin(nodePtr	_start){
-				node *StartingNode = _start;
-				while (StartingNode->left != nullptr)
-					StartingNode = StartingNode->left;
-				return StartingNode;
+			nodePtr	treeMin(){
+				return ft::treeMin(_tree_root);
 			}
-			nodePtr	treeMax(nodePtr	_start){
-				node *StartingNode = _start;
-				while (StartingNode->right != nullptr)
-					StartingNode = StartingNode->right;
-				return StartingNode;
+			nodePtr	treeMax(){
+				return ft::treeMax(_tree_root);
 			}
 			nodePtr	getRoot(){
 				return	_tree_root;
@@ -205,7 +260,7 @@ namespace ft{
 						node_allocator(_allocator).deallocate(temp, 1);
 					}//case3
 					else{
-						nodePtr	temp = treeMin(start->right);
+						nodePtr	temp = ft::treeMin(start->right);
 						// start->Value = temp->Value;
 						node_allocator(_allocator).construct(start, temp->Value);
 						start->right = _deletehelper(start->right , temp->Value.first);
@@ -276,6 +331,8 @@ namespace ft{
 			typedef	__tree<value_type, key_compare, allocator_type>			tree;
 			typedef	__tree_iter<value_type, nodePtr>							iterator;
 			typedef	__tree_iter<const_value_type, nodePtr>							const_iterator;
+			typedef	__tree_reverse_iter<iterator>								reverse_iterator;
+			typedef	__tree_reverse_iter<const_iterator>								const_reverse_iterator;
 		
 			explicit map (const key_compare& comp = key_compare(),
 								const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _bst(nullptr) {};
