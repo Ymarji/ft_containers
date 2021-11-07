@@ -25,6 +25,7 @@ namespace ft{
 			return !(first == second);
 		}
 	};
+	
 	template <class T1, class T2>
 	std::ostream	&operator<<(std::ostream &os, ft::pair<T1, T2> pair)
 	{
