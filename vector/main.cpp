@@ -173,26 +173,44 @@ int main(){
 		// // IN-ORDER TREE WALK
 		Tr.ordred_traversal(Tr.getRoot());
 		put("========");
-		// ft::map<int, int>::_iterator it(Tr.treeMin(Tr.getRoot()));
+		ft::map<int, int>::iterator it(Tr.treeMax());
+		--it;
+		++it;
+		std::cout << (*it) << std::endl;
 		// for (size_t i = 0; i < 13; i++)
 		// {
 		// 	std::cout  << i << "  "<< (*it++) << std::endl;
+		// }
+		ft::pair<int ,int> *a = new ft::pair<int ,int>();
+		std::cout  << a->second;
+		// std::cout << (*it++) << std::endl;
+		// // std::cout << (*it--) << std::endl;
+		// std::cout << (*it) << std::endl;
+		// std::cout << (*--it) << std::endl;
+
+		// ft::map<int, int>::const_iterator it(Tr.treeMin());
+		// for (size_t i = 0; i < 13; i++)
+		// {
+		// 	std::cout << (*it++) << std::endl;
 		// }
 		// std::cout << (*it++) << std::endl;
 		// // std::cout << (*it--) << std::endl;
 		// std::cout << (*it) << std::endl;
 		// std::cout << (*--it) << std::endl;
 
-		ft::map<int, int>::const_iterator it(Tr.treeMin(Tr.getRoot()));
-		for (size_t i = 0; i < 13; i++)
-		{
-			std::cout << (*it++) << std::endl;
-		}
-		// std::cout << (*it++) << std::endl;
-		// // std::cout << (*it--) << std::endl;
-		// std::cout << (*it) << std::endl;
-		// std::cout << (*--it) << std::endl;
 
+		// std::map<int,int> a;
+		// // a[1] = 1;
+		// // a[2] = 2;
+		// // a[3] = 3;
+		// // a[4] = 4;
+		// // a[5] = 5;
+		// // a[6] = 6;
+
+		// std::map<int, int>::iterator it11 = a.end();
+		// // --it11;
+		// // std::cout << it11->second << std::endl;
+		// std::cout << std::atoi("-1");
 	}
     return 0;
 }
