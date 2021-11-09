@@ -4,6 +4,7 @@
 #include "pair.hpp"
 #include "map_util.hpp"
 #include <memory>
+#include <algorithm>
 
 namespace ft{
 	template <class _Tp>
@@ -146,24 +147,31 @@ namespace ft{
 
 			typedef	__node<value_type>											node;
 			typedef typename allocator_type::template rebind<node>::other		node_allocator; //
-			typedef	__tree<value_type, key_compare, allocator_type>				_tree;
-
+			typedef	__tree<value_type, key_compare, allocator_type>				_tree; 
 			typedef	node*														nodePtr;
+		public:	//REVIEW:
+			typedef	value_type	*							pointer;
+			typedef	const pointer							const_pointer;
+			typedef	value_type	&							referance;
 		private:
 			size_type			_size;
 			const key_compare	&_CompObject;
 			const Allocator		&_allocator;
 			node			*_tree_root;
+			node			*_end_node;
 		public:
 			__tree(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _tree_root(nullptr), _size(0) {};
 			__tree(value_type _t, const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type()):_tree_root(_t), _CompObject(comp), _allocator(alloc), _size(0) {};
 			nodePtr	Base(){return _tree_root; }
-			nodePtr	treeMin(){
+			nodePtr end_node(){
+				return node_allocator(_allocator).allocate(1);
+			}
+			nodePtr	begin(){
 				return ft::treeMin(_tree_root);
 			}
-			nodePtr	treeMax(){
-				return ft::treeMax(_tree_root);
+			nodePtr	end(){
+				return _end_node;
 			}
 			nodePtr	getRoot(){
 				return	_tree_root;
@@ -180,8 +188,12 @@ namespace ft{
 				nodePtr	TreeDriver = _tree_root;
 				nodePtr	parent = nullptr;
 				_size++;
-				if	(_tree_root == nullptr)
+				if	(_tree_root == nullptr){
 					_tree_root = newNode;
+					_end_node = end_node();
+					_tree_root->parent = _end_node;
+					_end_node->left = _tree_root;
+				}
 				else
 				{
 					while (TreeDriver != nullptr)
@@ -217,6 +229,13 @@ namespace ft{
 			size_type size(){
 				return _size;
 			}
+			// int	Hight(nodePtr	x){
+			// 	if (x == nullptr)
+			// 		return 0;
+			// 	size_type lH = Hight(x->left);
+			// 	size_type rH = Hight(x->right);
+			// 	return std::max(lH, rH) + 1;
+			// }
 		private:
 			nodePtr	searchFrom(node *start, const key_value& key_value){
 				nodePtr	Driver = start;
@@ -326,9 +345,9 @@ namespace ft{
 		public:
 			typedef	__node<value_type>									node;
 			typedef	node*									nodePtr;
-			typedef typename allocator_type::template rebind<node>::other		node_allocator; //
+			typedef typename allocator_type::template rebind<node>::other		node_allocator; ////REVIEW:
 			typedef	const value_type											const_value_type;
-			typedef	__tree<value_type, key_compare, allocator_type>			tree;
+			typedef	__tree<value_type, key_compare, allocator_type>				tree;
 			typedef	__tree_iter<value_type, nodePtr>							iterator;
 			typedef	__tree_iter<const_value_type, nodePtr>							const_iterator;
 			typedef	__tree_reverse_iter<iterator>								reverse_iterator;
@@ -342,7 +361,28 @@ namespace ft{
 						const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _bst() {};
 			
 			iterator begin(){
-				return iterator(_bst.treeMin());
+				return iterator(_bst.begin());
+			}
+			iterator end(){
+				return iterator(_bst.end());
+			}
+			const_iterator begin() const{
+				return const_iterator(_bst.begin());
+			}
+			const_iterator end() const{
+				return const_iterator(_bst.end());
+			}
+			reverse_iterator rbegin(){
+				return reverse_iterator(_bst.end());
+			}
+			reverse_iterator rend(){
+				return reverse_iterator(_bst.begin());
+			}
+			const_reverse_iterator rbegin() const{
+				return const_reverse_iterator(_bst.end());
+			}
+			const_reverse_iterator rend() const{
+				return const_reverse_iterator(_bst.begin());
 			}
 		private:
 			key_compare		_CompObject;
