@@ -18,6 +18,8 @@
 #include "itarator_traits.hpp"
 // #include <stack>
 #define put(x) std::cout << x << std::endl
+
+//FIXME:   PLZ LOOK FOR DEALOCATE
 namespace ft
 {
 	template <typename Iter>
@@ -210,7 +212,7 @@ namespace ft
 				typename vectorIterator<Iterator>::difference_type operator- (
 					const vectorIterator<Iterator>& lhs,
 					const vectorIterator<Iterator>& rhs){
-						return (rhs.base() - lhs.base()); 
+						return (lhs.base() - rhs.base()); 
 					};
 			template <typename iter>
 			vectorIterator<iter>	operator+(typename vectorIterator<iter>::difference_type n, vectorIterator<iter> &out){
@@ -291,7 +293,7 @@ namespace ft
 				*this = rhs;
 			};
 			~vector(){
-				_allocator.deallocate(_ptr, _cap);
+				// _allocator.deallocate(_ptr, _cap);
 			};
 		private: /* utile funstion */
 		template <typename _Iter>
@@ -308,7 +310,7 @@ namespace ft
 				size_type _cc = capacity();
 				for (size_type i = 0; i < _cc; i++)
 					_allocator.destroy(_ptr + i);
-				_allocator.deallocate(_ptr, _cc);
+				// _allocator.deallocate(_ptr, _cc);
 			}
 		public: /* iterator Function */
 			iterator begin(){
@@ -373,15 +375,15 @@ namespace ft
 					_tmp[i] = _ptr[i];
 					for (size_type i = 0; i < _cap; i++)
 						_allocator.destroy(_ptr + i);
-					_allocator.deallocate(_ptr, _cap);
+					// _allocator.deallocate(_ptr, _cap);
 					_cap = n;
 					_ptr = _tmp;
 				}
 			};
 		public: /* Vector Operators */
 			vector& operator= (const vector& rhs){
-				if(_cap != 0)
-					_allocator.deallocate(_ptr, _cap);
+				// if(_cap != 0)
+				// 	_allocator.deallocate(_ptr, _cap);
 				this->_allocator = rhs._allocator;
 				this->_cap = rhs._cap;
 				this->_size = rhs._size;
@@ -441,7 +443,7 @@ namespace ft
 					throw std::length_error("Size beyond Max_size");
 			if (n > _cap){
 				DestroyV();
-				// _cap = n * 2;
+				// _cap = n * 2;//REVIEW:
 				_cap = n;
 				_size = n;
 				_ptr = _allocator.allocate(_cap);
@@ -474,7 +476,7 @@ namespace ft
 					tmp[i] = _ptr[i];
 					_allocator.destroy(_ptr + i);
 				}
-				_allocator.deallocate(_ptr, _cap / 2);
+				// _allocator.deallocate(_ptr, _cap / 2);
 				_ptr = tmp;
 				_ptr[_size] = val;
 				_size++;
@@ -531,7 +533,7 @@ namespace ft
 					insert(position, _tmp[i]);
 					i--;
 				}
-				_allocator.deallocate(_tmp, _dis);
+				// _allocator.deallocate(_tmp, _dis);
 			};
 			iterator erase (iterator position){
 				size_type _dis = distance(begin(), position);
