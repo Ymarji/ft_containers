@@ -163,7 +163,7 @@ namespace ft{
 	class __tree{
 		public:
 			typedef Tp															value_type;
-			typedef typename Tp::first_type										key_value;
+			typedef typename Tp::first_type										key_type;
 			typedef typename Tp::second_type									mapped_type;
 			typedef Compare														key_compare;
 			typedef Allocator													allocator_type;
@@ -353,7 +353,7 @@ namespace ft{
 				return std::max(lH, rH) + 1;
 			}
 		private:
-			nodePtr	searchFrom(node *start, const key_value& key_value){
+			nodePtr	searchFrom(node *start, const key_type& key_value){
 				nodePtr	Driver = start;
 				while (Driver != nullptr)
 				{
@@ -367,7 +367,7 @@ namespace ft{
 				return nullptr;
 			}
 			
-			nodePtr	_deletehelper(nodePtr	start, const key_value& key){
+			nodePtr	_deletehelper(nodePtr	start, const key_type& key){
 				// nodePtr		temp = start->parent;
 				if (start == nullptr)
 					return nullptr;
@@ -409,10 +409,10 @@ namespace ft{
 				return start;
 			}
 		public:
-			nodePtr	search(const key_value& key_value){
+			nodePtr	search(const key_type& key_value){
 				return searchFrom(_tree_root, key_value);
 			}
-			nodePtr	deletBalence(nodePtr	node, const key_value& key)
+			nodePtr	deletBalence(nodePtr	node, const key_type& key)
 			{
 
 				if (node != _end_node)
@@ -429,7 +429,7 @@ namespace ft{
 				}
 				return nullptr;
 			}
-			void	_delete(const key_value& key)
+			void	_delete(const key_type& key)
 			{
 				nodePtr X = this->search(key);
 				nodePtr XP = X->parent;
@@ -483,7 +483,7 @@ namespace ft{
 				printHelper(root->right, indent, true);
 				}
 			}
-			mapped_type& operator[] (const key_value& k){
+			mapped_type& operator[] (const key_type& k){
 				nodePtr	tmp = search(k);
 				if (tmp != nullptr)
 					return tmp->Value.second;
