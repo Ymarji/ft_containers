@@ -4,6 +4,7 @@
 #include "pair.hpp"
 #include <iostream>
 #include "map_util.hpp"
+#include "itarator_traits.hpp"
 #include <memory>
 #include <algorithm>
 
@@ -30,6 +31,7 @@ namespace ft{
 				return (this->Value.first < rhs.Value.first);
 			}
 	};
+	
 
 	template <class _iter>
 	class	__tree_reverse_iter : public ft::iterator< std::bidirectional_iterator_tag,
@@ -39,10 +41,6 @@ namespace ft{
 									typename iterator_traits<_iter>::reference>
 	{
 		public:
-			//REVIEW:
-			// typedef	_iter					iterator;
-			// typedef	iterator&				reference;
-			// typedef	iterator*				pointer;
 			typedef _iter													iterator;
 			typedef typename iterator_traits<iterator>::iterator_category	iterator_category;
 			typedef typename iterator_traits<iterator>::difference_type  	difference_type;
@@ -118,8 +116,8 @@ namespace ft{
 		private:
 			_nodePtr	_node;
 		public:
+		__tree_iter():_node(nullptr){};
 		__tree_iter(_nodePtr n):_node(n){};
-		
 		__tree_iter	operator++(){//REVIEW: Wot was i Doing
 			_nodePtr tmp = ft::tree_next_iter(_node);
 			_node = tmp;
@@ -144,13 +142,10 @@ namespace ft{
 			return (_node->Value);
 		};
 		
-		// pointer	operator->(){
-		// 	return	&(_node->Value);
-		// };
-
-		_nodePtr	operator->(){
-			return	(_node);
+		pointer	operator->(){
+			return	&(_node->Value);
 		};
+		
 		bool	operator==(__tree_iter const &rhs){
 			return	( this->_node == rhs._node);
 		};
@@ -159,7 +154,7 @@ namespace ft{
 		};
 	};
 
-	template <class Tp, class Compare = std::less<typename Tp::first_type> , class Allocator = std::allocator<Tp> >
+	template <class Tp, class Compare , class Allocator = std::allocator<Tp> >
 	class __tree{
 		public:
 			typedef Tp															value_type;
@@ -183,9 +178,15 @@ namespace ft{
 			const key_compare	&_CompObject;
 			const Allocator		&_allocator;
 			node			*_tree_root;
+		public:
 			node			*_end_node;
 		public:
-			__tree(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _tree_root(nullptr), _size(0) {};
+			__tree(const key_compare& comp = key_compare(), const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _size(0) {
+				_end_node = end_node();
+				_end_node->parent = nullptr;
+				_end_node->balanceFactor = 0;
+				_tree_root = _end_node;
+			};
 			__tree(value_type _t, const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type()):_tree_root(_t), _CompObject(comp), _allocator(alloc), _size(0) {};
 			nodePtr	Base(){return _tree_root; }
@@ -193,9 +194,19 @@ namespace ft{
 				return node_allocator(_allocator).allocate(1);
 			}
 			nodePtr	begin(){
+				if (_tree_root == _end_node)
+					return _end_node;
 				return ft::treeMin(_tree_root);
 			}
 			nodePtr	end(){
+				return _end_node;
+			}
+			nodePtr	begin() const{
+				if (_tree_root == _end_node)
+					return _end_node;
+				return ft::treeMin(_tree_root);
+			}
+			nodePtr	end() const{
 				return _end_node;
 			}
 			size_type size() const{
@@ -295,15 +306,15 @@ namespace ft{
 				}
 				return tmp;
 			}
-			void	AddinTree(nodePtr	newNode){
+			nodePtr		AddinTree(nodePtr	newNode){
 				nodePtr	TreeDriver = _tree_root;
 				nodePtr	parent = nullptr;
 				_size++;
-				if	(_tree_root == nullptr){
+				if	(_tree_root == nullptr || _tree_root == _end_node){
 					_tree_root = newNode;
-					_end_node = end_node();
-					_end_node->parent = nullptr;
-					_end_node->balanceFactor = 0;
+					// _end_node = end_node();
+					// _end_node->parent = nullptr;
+					// _end_node->balanceFactor = 0;
 					_tree_root->parent = _end_node;
 					_end_node->left = _tree_root;
 				}
@@ -313,33 +324,106 @@ namespace ft{
 					{
 						parent = TreeDriver;
 						if (newNode->Value.first == TreeDriver->Value.first){
-							return ;
+							return nullptr;
 							TreeDriver->Value.second = newNode->Value.second;
 							node_allocator(_allocator).deallocate(newNode ,1);
 							_size--;
 							break ;
 						}
-						else if (_CompObject(newNode->Value.first, TreeDriver->Value.first))
+						else if (_CompObject(newNode->Value, TreeDriver->Value))
 							TreeDriver = TreeDriver->left;
 						else
 							TreeDriver = TreeDriver->right;
 					}
-					if (_CompObject(newNode->Value.first, parent->Value.first))
+					if (_CompObject(newNode->Value, parent->Value))
 						parent->left = newNode;
 					else
 						parent->right = newNode;
 					newNode->parent = parent;
 				}
-
 				balanceUpdate(newNode);
+				return newNode;
 			}
-			void	ordred_traversal(nodePtr	root){
+			nodePtr		AddinTree(nodePtr start,nodePtr	newNode){
+				nodePtr	TreeDriver = start;
+				nodePtr	parent = nullptr;
+				_size++;
+				if	(_tree_root == nullptr || _tree_root == _end_node){
+					_tree_root = newNode;
+					// _end_node = end_node();
+					// _end_node->parent = nullptr;
+					// _end_node->balanceFactor = 0;
+					_tree_root->parent = _end_node;
+					_end_node->left = _tree_root;
+				}
+				else
+				{
+					while (TreeDriver != nullptr)
+					{
+						parent = TreeDriver;
+						if (newNode->Value.first == TreeDriver->Value.first){
+							return nullptr;
+							TreeDriver->Value.second = newNode->Value.second;
+							node_allocator(_allocator).deallocate(newNode ,1);
+							_size--;
+							break ;
+						}
+						else if (_CompObject(newNode->Value, TreeDriver->Value))
+							TreeDriver = TreeDriver->left;
+						else
+							TreeDriver = TreeDriver->right;
+					}
+					if (_CompObject(newNode->Value, parent->Value))
+						parent->left = newNode;
+					else
+						parent->right = newNode;
+					newNode->parent = parent;
+				}
+				balanceUpdate(newNode);
+				return newNode;
+			}
+			void	insertHint(nodePtr Start, nodePtr newNode)
+			{
+				bool	stat = false;
+				if (Start != _tree_root)
+				{
+					if (Start->parent->left == Start)
+					{
+						if (_CompObject(newNode->Value, Start->parent->Value))
+						{
+							AddinTree(Start, newNode);
+							stat = true;
+						}
+					}
+					else if (Start->parent->right == Start)
+					{
+						if (!_CompObject(newNode->Value, Start->parent->Value))
+						{
+							AddinTree(Start, newNode);
+							stat = true;
+						}
+					}
+				}
+				if (stat == false)
+					AddinTree(newNode);
+			}
+
+			void	destroy(nodePtr	root){
 				nodePtr	Driver = root;
 				if (Driver != nullptr){
-					put(Driver->Value);
-					std::cout << Driver->balanceFactor << std::endl;
-					ordred_traversal(Driver->left);
-					ordred_traversal(Driver->right);
+					destroy(Driver->left);
+					destroy(Driver->right);
+					node_allocator(_allocator).deallocate(root, 1);
+				}
+			};
+			void clear(){
+				if (_tree_root != _end_node)
+				{
+					destroy(_tree_root);
+					_size = 0;
+					// _tree_root = nullptr;
+					_tree_root = _end_node;
+					_end_node->left = _tree_root;
 				}
 			};
 			size_type size(){
@@ -353,13 +437,13 @@ namespace ft{
 				return std::max(lH, rH) + 1;
 			}
 		private:
-			nodePtr	searchFrom(node *start, const key_type& key_value){
+			nodePtr	searchFrom(node *start, const key_type& key_value) const{
 				nodePtr	Driver = start;
-				while (Driver != nullptr)
+				while (Driver != nullptr && Driver != _end_node)
 				{
 					if (Driver->Value.first == key_value)
 						return Driver;
-					if (_CompObject(key_value, Driver->Value.first))
+					if (_CompObject(key_value, Driver->Value))
 						Driver = Driver->left;
 					else
 						Driver = Driver->right;
@@ -369,11 +453,11 @@ namespace ft{
 			
 			nodePtr	_deletehelper(nodePtr	start, const key_type& key){
 				// nodePtr		temp = start->parent;
-				if (start == nullptr)
+				if (start == nullptr || start == _end_node)
 					return nullptr;
-				else if (_CompObject(key, start->Value.first))
+				else if (_CompObject(key, start->Value))
 					start->left = _deletehelper(start->left, key);
-				else if (_CompObject(start->Value.first, key))
+				else if (_CompObject(start->Value, key))
 					start->right = _deletehelper(start->right, key);
 				else{
 					if (start->left == nullptr && start->right == nullptr){
@@ -409,8 +493,41 @@ namespace ft{
 				return start;
 			}
 		public:
-			nodePtr	search(const key_type& key_value){
+			nodePtr	lower_bound(const key_type& key_value){
+				nodePtr start = _tree_root;
+				nodePtr	res = _end_node;
+				while (start != nullptr)
+				{
+					if (_CompObject(start->Value, key_value) == false){
+						res = start;
+						start = start->left;
+					}
+					else{
+						start = start->right;
+					}
+				}
+				return	res;
+			}
+			nodePtr	upper_bound(const key_type& key_value){
+				nodePtr start = _tree_root;
+				nodePtr	res = _end_node;
+				while (start != nullptr)
+				{
+					if (_CompObject(key_value, start->Value) == true){
+						res = start;
+						start = start->left;
+					}
+					else{
+						start = start->right;
+					}
+				}
+				return	res;
+			}
+			nodePtr	search(const key_type& key_value) const{
 				return searchFrom(_tree_root, key_value);
+			}
+			nodePtr	search(const value_type& value_type) const{
+				return searchFrom(_tree_root, value_type.first);
 			}
 			nodePtr	deletBalence(nodePtr	node, const key_type& key)
 			{
@@ -438,11 +555,14 @@ namespace ft{
 				if (X->left == nullptr || X->right == nullptr)
 					X_Twin = false;
 				_tree_root = _deletehelper(_tree_root, key);
-				if (_tree_root != nullptr)
+				if (_tree_root != nullptr && _tree_root != _end_node)
 					_size--;
 				if (X_Twin == false){
 					deletBalence(XP, key);
-					std::cout << X_Twin << std::endl;
+				}
+				if (_tree_root == nullptr){
+					_tree_root = _end_node;
+					_end_node->left = _tree_root;
 				}
 			}
 			size_type max_size() const{
@@ -483,14 +603,13 @@ namespace ft{
 				printHelper(root->right, indent, true);
 				}
 			}
-			mapped_type& operator[] (const key_type& k){
-				nodePtr	tmp = search(k);
-				if (tmp != nullptr)
-					return tmp->Value.second;
-				else{
-					AddinTree(MakeNode(ft::make_pair(k, mapped_type())));
-					return search(k)->Value.second;
-				}
+			void	swap(__tree& x){
+				nodePtr	tmp = this->_end_node;
+				this->_end_node = x._end_node;
+				x._end_node = tmp;
+				tmp = this->_tree_root;
+				this->_tree_root = x._tree_root;
+				x._tree_root = tmp;
 			};
 			~__tree() {};
 	};
@@ -535,19 +654,29 @@ namespace ft{
 			typedef	node*														nodePtr;
 			typedef typename allocator_type::template rebind<node>::other		node_allocator; ////REVIEW:
 			typedef	const value_type											const_value_type;
-			typedef	__tree<value_type, key_compare, allocator_type>				tree;
+			typedef	__tree<value_type, value_compare, allocator_type>				tree;
 			typedef	__tree_iter<value_type, nodePtr>							iterator;
 			typedef	__tree_iter<const_value_type, nodePtr>							const_iterator;
 			typedef	__tree_reverse_iter<iterator>								reverse_iterator;
 			typedef	__tree_reverse_iter<const_iterator>								const_reverse_iterator;
 		
 			explicit map (const key_compare& comp = key_compare(),
-								const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _bst() {};
+								const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _bst(_CompObject) {};
 			template <class InputIterator>
 				map (InputIterator first, InputIterator last,
 						const key_compare& comp = key_compare(),
 						const allocator_type& alloc = allocator_type()):_CompObject(comp), _allocator(alloc), _bst() {};
 			
+			map& operator= (const map& x){
+				if (this != &x){
+					_bst.clear();
+					std::cout << "here" << std::endl;
+					this->_CompObject = x._CompObject;
+					this->_allocator = x._allocator;
+					insert(x.begin(), x.end());
+				}
+				return *this;
+			};
 			iterator begin(){
 				return iterator(_bst.begin());
 			}
@@ -588,16 +717,124 @@ namespace ft{
 
 			//ACCESS ELEMENT
 			mapped_type& operator[] (const key_type& k){
-				return _bst[k];
+				nodePtr	node = _bst.search(k);
+				if (node == nullptr){
+					value_type _p = ft::make_pair(k, mapped_type());
+					node = _bst.MakeNode(_p);
+					_bst.AddinTree(node);
+				}
+				return node->Value.second;
 			};
 
 			void prettyPrint(){
 				_bst.prettyPrint();
 			};
-			tree			_bst;
+			void clear(){
+				_bst.clear();
+			};
+			size_type count (const key_type& k) const{
+				if (_bst.search(k) != nullptr)
+					return 1;
+				else
+					return 0;
+			};
+			//Modifiers
+			pair<iterator, bool> insert (const value_type& val){
+				nodePtr	node = _bst.search(val);
+				if (node != nullptr)
+					return pair<iterator, bool>(iterator(node), false);
+				nodePtr tmp = _bst.MakeNode(val);
+				node = _bst.AddinTree(tmp);
+				return pair<iterator, bool>(iterator(node), true);
+			};
+			iterator insert (iterator position, const value_type& val){
+				nodePtr tmp = _bst.search(*position);
+				if (tmp == nullptr){
+					return insert(val).first;
+				}
+				else{
+					nodePtr node = _bst.MakeNode(val);
+					_bst.insertHint(tmp, node);
+					return iterator(node);
+				}
+			};
+			template <class InputIterator>
+				void insert (InputIterator first, InputIterator last){
+					for (; first != last; first++)
+						insert(*first);
+				};
+			void erase (iterator position){
+				value_type	__p = *position;
+				if (find(__p.first) != end())
+					_bst._delete(__p.first);
+			};
+			size_type erase (const key_type& k){
+				iterator	it = find(k);
+				if (it == end())
+					return 0;
+				_bst._delete(k);
+				return 1;
+			};
+			void erase (iterator first, iterator last){
+				iterator temp;
+				while (first != last)
+				{
+					temp = first;
+					first++;
+					erase(temp);
+				}
+			};
+			void swap (map& x){
+				_bst.swap(x._bst);
+			};
+			//OPERATIOM
+			iterator find (const key_type& k){
+				nodePtr	node = _bst.search(k);
+				if (node == nullptr)
+					return end();
+				return iterator(node);
+			};
+			const_iterator find (const key_type& k) const{
+				nodePtr	node = _bst.search(k);
+				if (node == nullptr)
+					return end();
+				return const_iterator(node);
+			};
+			value_compare value_comp() const{
+				return	_CompObject;
+			};
+			key_compare key_comp() const{
+				return this->value_comp().comp;
+			};
+			iterator lower_bound (const key_type& k){
+				return iterator(_bst.lower_bound(k));
+			};
+			const_iterator lower_bound (const key_type& k) const{
+				return const_iterator(_bst.lower_bound(k));
+			};
+			iterator upper_bound (const key_type& k){
+				return iterator(_bst.upper_bound(k));
+			};
+			const_iterator upper_bound (const key_type& k) const{
+				return const_iterator(_bst.upper_bound(k));
+			};
+			pair<iterator,iterator>             equal_range (const key_type& k){
+				return pair<iterator,iterator> (lower_bound(k), upper_bound(k));
+			};
+			pair<const_iterator,const_iterator> equal_range (const key_type& k) const{
+				return pair<const_iterator,const_iterator> (lower_bound(k), upper_bound(k));
+			};
+			allocator_type get_allocator() const{
+				return _allocator;
+			};
+			~map(){
+				this->clear();
+				node_allocator(_allocator).deallocate(_bst._end_node, 1);
+			}
 		private:
-			key_compare		_CompObject;
-			allocator_type	_allocator;
+			tree			_bst;
+			value_compare		_CompObject;
+			allocator_type		_allocator;
 	};
 };
 #endif /* MAP_HPP */

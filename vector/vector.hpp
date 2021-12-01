@@ -49,7 +49,7 @@ namespace ft
 				return *(--base());
 			}
 			vreverse_iterator operator=( const vreverse_iterator &rhs){
-				this->_ptr = rhs._ptr;
+				this->_iter = rhs._iter;
 				return *this;
 			}
 			vreverse_iterator operator+ (difference_type n) const{
@@ -293,7 +293,7 @@ namespace ft
 				*this = rhs;
 			};
 			~vector(){
-				// _allocator.deallocate(_ptr, _cap);
+				_allocator.deallocate(_ptr, _cap);
 			};
 		private: /* utile funstion */
 		template <typename _Iter>
@@ -310,7 +310,7 @@ namespace ft
 				size_type _cc = capacity();
 				for (size_type i = 0; i < _cc; i++)
 					_allocator.destroy(_ptr + i);
-				// _allocator.deallocate(_ptr, _cc);
+				_allocator.deallocate(_ptr, _cc);
 			}
 		public: /* iterator Function */
 			iterator begin(){
@@ -371,19 +371,19 @@ namespace ft
 				else if(n > _ccap)
 				{
 					pointer _tmp = _allocator.allocate(n);
-					for (size_t i = 0; i < _cs; i++)
-					_tmp[i] = _ptr[i];
-					for (size_type i = 0; i < _cap; i++)
+					for (size_type i = 0; i < _cs; i++)
+						_tmp[i] = _ptr[i];
+					for (size_type i = 0; i < _cs; i++)
 						_allocator.destroy(_ptr + i);
-					// _allocator.deallocate(_ptr, _cap);
+					_allocator.deallocate(_ptr, _cap);
 					_cap = n;
 					_ptr = _tmp;
 				}
 			};
 		public: /* Vector Operators */
 			vector& operator= (const vector& rhs){
-				// if(_cap != 0)
-				// 	_allocator.deallocate(_ptr, _cap);
+				if(_cap != 0)
+					_allocator.deallocate(_ptr, _cap);
 				this->_allocator = rhs._allocator;
 				this->_cap = rhs._cap;
 				this->_size = rhs._size;
@@ -424,7 +424,6 @@ namespace ft
 					throw std::length_error("Size beyond Max_size");
 			if (_rs > _cap){
 				DestroyV();
-				// _cap = _rs * 2;
 				_cap = _rs;
 				_size = _rs;
 				_ptr = _allocator.allocate(_cap);
@@ -443,7 +442,6 @@ namespace ft
 					throw std::length_error("Size beyond Max_size");
 			if (n > _cap){
 				DestroyV();
-				// _cap = n * 2;//REVIEW:
 				_cap = n;
 				_size = n;
 				_ptr = _allocator.allocate(_cap);
@@ -476,7 +474,7 @@ namespace ft
 					tmp[i] = _ptr[i];
 					_allocator.destroy(_ptr + i);
 				}
-				// _allocator.deallocate(_ptr, _cap / 2);
+				_allocator.deallocate(_ptr, _cap / 2);
 				_ptr = tmp;
 				_ptr[_size] = val;
 				_size++;
@@ -505,10 +503,10 @@ namespace ft
 			size_type _dis = distance(begin(), position);
 			size_type _cs = size();
 			size_type _ccp = capacity();
-			if (_cs >= _ccp)
+			if (_cs + n >= _ccp)
 				reserve((n + _cs > _cap * 2)? n + _cs : _size * 2);
 			_size += n;
-			for (size_type i = size() - 1; i > _dis ;i--)
+			for (size_type i = size() - 1; i > _cs - 1 ;i--)
 			{
 				_ptr[i] = _ptr[i - n];
 			}
@@ -520,7 +518,8 @@ namespace ft
 		template <class InputIterator>
 			typename ft::enable_if<!ft::is_integral<InputIterator>::value, void>::type insert (iterator position, InputIterator first, InputIterator last){
 				size_type _dis = distance(first, last);
-				typename InputIterator::pointer _tmp = _allocator.allocate(_dis);
+				size_type _pos = distance(begin(), position);
+				typename iterator_traits<InputIterator>::pointer _tmp = _allocator.allocate(_dis);
 				int cp = 0;
 				for (InputIterator i = first; i != last; i++)
 				{
@@ -530,10 +529,10 @@ namespace ft
 				int i = _dis - 1;
 				while ( i < _dis)
 				{
-					insert(position, _tmp[i]);
+					insert(iterator(_ptr + _pos), _tmp[i]);
 					i--;
 				}
-				// _allocator.deallocate(_tmp, _dis);
+				_allocator.deallocate(_tmp, _dis);
 			};
 			iterator erase (iterator position){
 				size_type _dis = distance(begin(), position);
